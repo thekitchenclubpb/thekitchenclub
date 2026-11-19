@@ -708,7 +708,7 @@ body.kc10 select.sub-select{display:none !important}
 .kbox h4{margin:0 0 10px;font-size:12px;letter-spacing:2.5px;color:rgba(244,240,230,.66);font-weight:600}
 .kbox.chg{background:#1D4A3C;border-color:rgba(196,206,123,.45)}.kbox.chg h4{color:#C4CE7B;font-weight:700}
 .kmode{display:flex;gap:8px}.kmode button{flex:1;padding:12px 0;border-radius:12px;border:1px solid rgba(244,240,230,.25);background:transparent;color:#F4F0E6;font:800 15px 'Rubik',system-ui,sans-serif;cursor:pointer}
-.kmode button.here.on{background:#A0AA59;color:#0F2A21;border-color:#A0AA59}.kmode button.ns{border-color:#E8A388;color:#E8A388}.kmode button.ns.on{background:#E8A388;color:#0F2A21}
+.kmode button.here.on{background:#A0AA59;color:#0F2A21;border-color:#A0AA59}.kmode button.late{border-color:#E3C463;color:#E3C463}.kmode button.late.on{background:#E3C463;color:#0F2A21}.kmode button{font-size:14px !important;padding:12px 4px !important}.kmode button.ns{border-color:#E8A388;color:#E8A388}.kmode button.ns.on{background:#E8A388;color:#0F2A21}
 .kchg li{font-size:14px;line-height:1.35;margin:0 0 8px;list-style:none;display:flex;gap:10px}.kchg li i{width:8px;height:8px;border-radius:50%;margin-top:6px;flex:0 0 8px;background:#C4CE7B}.kchg li i.r{background:#E8A388}.kchg{padding:0;margin:0}
 .kfull{display:block;width:100%;padding:12px 0;border-radius:12px;border:1px solid rgba(244,240,230,.3);background:transparent;color:#F4F0E6;font:600 14px 'Rubik',system-ui,sans-serif;margin-top:8px;cursor:pointer}
 /* leaderboard */
@@ -777,6 +777,21 @@ body.kc-viewer{--forest:#0F2A21;--forest2:#173D32;background:#0F2A21;font-family
 #vgate .vg-opt{display:block;width:100%;text-align:left;background:#173D32;border:1px solid rgba(244,240,230,.14);border-radius:20px;padding:20px;margin-bottom:12px;color:#F4F0E6;cursor:pointer;font-family:inherit}
 #vgate .vg-opt b{display:block;font-size:22px;font-weight:800;margin-bottom:4px}#vgate .vg-opt span{font-size:14px;color:rgba(244,240,230,.7)}
 #vgate .vg-opt.p{background:#A0AA59;color:#0F2A21}#vgate .vg-opt.p span{color:rgba(15,42,33,.75)}
+#vgate.vhero{justify-content:center;padding:24px 22px calc(28px + env(safe-area-inset-bottom))}
+#vgate .vg-hero{display:flex;flex-direction:column;align-items:center;text-align:center;margin-bottom:30px}
+#vgate .vg-hero img{width:min(46vw,190px);height:min(46vw,190px);border-radius:50%;box-shadow:0 8px 28px rgba(0,0,0,.4);margin-bottom:20px}
+#vgate .vg-club{font-size:12px;font-weight:700;letter-spacing:3px;color:#A0AA59;margin-bottom:6px}
+#vgate .vg-title{font-size:clamp(40px,13vw,56px);font-weight:800;line-height:1;margin-bottom:10px}
+#vgate .vg-sub{font-size:12px;letter-spacing:2.2px;color:rgba(244,240,230,.66)}
+#vgate h2.vg-q{font-size:22px;text-align:center;margin:0 0 16px}
+#vgate.vhero .vg-opt{text-align:center}
+@media(max-height:640px){#vgate .vg-hero img{width:90px;height:90px;margin-bottom:12px}#vgate .vg-hero{margin-bottom:18px}}
+.kbox.pbx{border-color:rgba(227,196,99,.45)}.kbox.pbx p{font-size:13px;line-height:1.35;color:rgba(244,240,230,.75);margin:6px 0 10px}.kbox.pbx .pbbtn{margin:0;background:#E3C463;color:#0F2A21;border:0;font-weight:800}
+.po-reset-head{margin-left:auto !important;font-size:.72rem !important;padding:.3rem .8rem !important;opacity:.85}
+.ks-card.ks-chg{border-color:rgba(227,196,99,.55)}.ks-ctag{margin-left:10px;font-size:10.5px;font-weight:800;letter-spacing:1.2px;padding:4px 9px;border-radius:999px;background:rgba(227,196,99,.2);color:#E3C463;border:1px solid rgba(227,196,99,.5)}
+.ks-ct.chg{background:rgba(227,196,99,.08);box-shadow:inset 3px 0 0 #E3C463;padding-left:10px;margin-left:-10px}.ks-new{color:#E3C463;font-weight:800}
+.ks-legend{display:flex;align-items:center;gap:10px;font-size:14px;color:rgba(244,240,230,.8);margin:0 0 12px}.ks-legend i{width:14px;height:14px;border-radius:4px;background:#E3C463;flex:none}
+#planb-warn{background:rgba(227,196,99,.16);border:1.5px solid #E3C463;color:#F4F0E6;border-radius:12px;padding:10px 14px;margin:0 0 12px;font-size:14px;line-height:1.4}
 #vgate .vg-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
 #vgate .vg-n{background:#173D32;border:1px solid rgba(244,240,230,.12);border-radius:16px;padding:12px 6px;display:flex;flex-direction:column;align-items:center;gap:6px;color:#F4F0E6;font:600 15px 'Rubik',system-ui,sans-serif;cursor:pointer}
 #vgate .vg-n .av{width:48px;height:48px;border-radius:50%;object-fit:cover}
@@ -1330,7 +1345,7 @@ function setPresent(name, on){
 function getTiers(){ return kcGetJSON(TIER_KEY, {}); }
 function getTier(name){ const t = getTiers()[name]; return (t>=1&&t<=5) ? t : (DEFAULT_TIERS[name]||3); }
 function setAbsent(name){ const a = getAttendance(); a[name] = false; saveAttendance(a); }
-const PAST_PLAYERS = {"Eden":3,"Arran B.":3,"Ave P.":3,"Beng D.":3,"Denis M.":3,"John D.":3,"Marchelle P.":3,"Mark L.":3,"Nic A.":3,"Nikki A.":3,"Patrick O.":3,"Pipoy H.":3,"Queenie M.":3,"Razel A.":3,"Vann M.":3}; // returning club players not on tonight's roster (all default to Mid)
+const PAST_PLAYERS = {"Eden":3,"Arran B.":3,"Ave P.":3,"Beng D.":3,"Denis M.":3,"John D.":3,"Marchelle P.":3,"Mark L.":3,"Nic A.":3,"Nikki A.":3,"Patrick O.":3,"Pipoy H.":3,"Queenie M.":3,"Razel A.":3,"Vann M.":3,"John Louie":3,"SJ":3,"Joshua":3,"Ethan":3,"AJ":3,"Cedric":3,"Althea":3,"Bea":3,"Martha":3,"Camille":3,"Nin":3,"Jason Ella":3,"Kel":3,"George":3,"Timothy":3,"Gela":3,"JB":3,"Alex":3,"Vish":3,"Michael":3}; // returning club players not on tonight's roster (all default to Mid)
 function setTier(name, t){ const o = getTiers(); o[name] = t; safeStorage.setItem(TIER_KEY, JSON.stringify(o)); }
 function cycleTier(name){ setTier(name, getTier(name)===5 ? 1 : getTier(name)+1); }
 function tiersCustomised(){ return Object.keys(getTiers()).length>0 || Object.keys(DEFAULT_TIERS).length>0; }
@@ -1582,6 +1597,87 @@ function collectSwaps(out, info){
   Object.keys(out).forEach(n=>{ if(out[n].swaps && out[n].swaps.length) info.swaps[n] = out[n].swaps; });
 }
 // Pure function of (attendance, tiers, frozen snapshots) -> schedule + info.
+
+// ═══════════════════════════════════════
+// PLAN B — hand-built Rounds 2-9 for when Ayi and Bianca are late (they join from Round 3).
+// Used only while the Plan B switch is on AND nobody else is missing / added (see planBActive).
+// ═══════════════════════════════════════
+const PLANB_KEY = 'kc_nov6_planb';
+const PLANB_PLAYERS = ['Ayi','Bianca'];
+const PLAN_B = {
+  2:{rest:["Angela","Ayi","Bianca","Mark"], courts:{3:{teamA:["John M.","Steffi"],teamB:["David","Charmaine"]},4:{teamA:["Jewel","Avdhoot"],teamB:["Crissa","Jason E."]},5:{teamA:["Jo","Ian"],teamB:["Pam","Carlo"]},6:{teamA:["Jason C.","Vincent"],teamB:["Matt","Daveen"]}}},
+  3:{rest:["Charmaine","Crissa","Pam","Steffi"], courts:{3:{teamA:["Ian","Angela"],teamB:["Jo","Matt"]},4:{teamA:["Vincent","Jason E."],teamB:["David","Mark"]},5:{teamA:["Bianca","Ayi"],teamB:["Jewel","Jason C."]},6:{teamA:["John M.","Carlo"],teamB:["Daveen","Avdhoot"]}}},
+  4:{rest:["Daveen","Jason C.","Jewel","Matt"], courts:{3:{teamA:["Pam","Bianca"],teamB:["Avdhoot","Jo"]},4:{teamA:["Mark","Angela"],teamB:["Charmaine","Jason E."]},5:{teamA:["Steffi","Ayi"],teamB:["Crissa","Ian"]},6:{teamA:["John M.","Carlo"],teamB:["David","Vincent"]}}},
+  5:{rest:["John M.","Carlo","Ian","Vincent"], courts:{3:{teamA:["David","Avdhoot"],teamB:["Jason E.","Ayi"]},4:{teamA:["Pam","Bianca"],teamB:["Steffi","Angela"]},5:{teamA:["Daveen","Jason C."],teamB:["Matt","Mark"]},6:{teamA:["Charmaine","Jo"],teamB:["Jewel","Crissa"]}}},
+  6:{rest:["Jason E.","Jewel","Jo","Mark"], courts:{3:{teamA:["Charmaine","Avdhoot"],teamB:["Crissa","Vincent"]},4:{teamA:["John M.","Carlo"],teamB:["Matt","Ayi"]},5:{teamA:["Pam","Bianca"],teamB:["David","Ian"]},6:{teamA:["Angela","Daveen"],teamB:["Jason C.","Steffi"]}}},
+  7:{rest:["Avdhoot","Charmaine","David","Ian"], courts:{3:{teamA:["John M.","Carlo"],teamB:["Ayi","Jason C."]},4:{teamA:["Pam","Bianca"],teamB:["Daveen","Steffi"]},5:{teamA:["Matt","Angela"],teamB:["Jo","Jason E."]},6:{teamA:["Crissa","Mark"],teamB:["Vincent","Jewel"]}}},
+  8:{rest:["Carlo","Daveen","Matt","Pam"], courts:{3:{teamA:["Avdhoot","Steffi"],teamB:["Jewel","Mark"]},4:{teamA:["Jo","Vincent"],teamB:["Charmaine","Jason C."]},5:{teamA:["John M.","Bianca"],teamB:["Ian","Jason E."]},6:{teamA:["Angela","Ayi"],teamB:["David","Crissa"]}}},
+  9:{rest:["Crissa","Jason E.","Jo","Vincent"], courts:{3:{teamA:["Daveen","Charmaine"],teamB:["Steffi","Matt"]},4:{teamA:["Jason C.","Ian"],teamB:["Mark","Ayi"]},5:{teamA:["David","Jewel"],teamB:["Angela","Avdhoot"]},6:{teamA:["John M.","Bianca"],teamB:["Pam","Carlo"]}}}
+};
+function planBFlag(){ try{ return safeStorage.getItem(PLANB_KEY)==='1'; }catch(e){ return false; } }
+// Plan B holds only while everyone except Ayi/Bianca is still expected and nobody new was added.
+function planBActive(){
+  if(!planBFlag()) return false;
+  if(getNewPlayers().length) return false;
+  const att = getAttendance();
+  return getRoster().every(n=> PLANB_PLAYERS.includes(n) || att[n]!==false);
+}
+
+// Auto Plan B: once Round 1 is fully scored and Round 2 hasn't started, if Ayi and Bianca are STILL unmarked
+// (never tapped Here or No show) and nobody else has changed, switch Plan B on. Fires once per session.
+const PLANB_AUTO_KEY = 'kc_nov6_planb_auto';
+function maybeAutoPlanB(){
+  if(KC_VIEWER || planBFlag()) return false;
+  try{
+    if(safeStorage.getItem(PLANB_AUTO_KEY)) return false;
+    if(!SCHEDULE[1] || !SCHEDULE[2] || !roundResolved(1) || roundLockedNow(2)) return false;
+    const att = getAttendance();
+    if(!PLANB_PLAYERS.every(n=>att[n]===undefined)) return false;
+    if(getNewPlayers().length) return false;
+    if(!getRoster().every(n=> att[n]!==false)) return false;
+    askPlanB();
+    return true;
+  }catch(e){ return false; }
+}
+// Pop-up to confirm before Plan B switches on, in case Ayi/Bianca arrived and nobody tapped Here.
+function askPlanB(){
+  if(document.getElementById('planb-ask')) return;
+  const ov = document.createElement('div'); ov.id='planb-ask'; ov.className='swap-pop'; ov.style.zIndex=9995;
+  ov.innerHTML = '<div class="sp-box"><div class="sp-h">ROUND 1 IS DONE \u00b7 ARE THEY HERE?</div>'+
+    '<div style="font-size:17px;font-weight:700;line-height:1.35;margin-bottom:6px">Ayi and Bianca are not checked in.</div>'+
+    '<div class="sp-note" style="margin:0 0 12px;font-size:14px">Look around the courts. If they are here, tap them. If not, Plan B starts with Round 2.</div>'+
+    '<div class="sp-list" style="flex-direction:column;align-items:stretch">'+
+    '<button type="button" data-a="both">Both are here</button>'+
+    '<button type="button" data-a="ayi">Only Ayi is here</button>'+
+    '<button type="button" data-a="bianca">Only Bianca is here</button>'+
+    '<button type="button" data-a="none" class="sp-next">Neither is here \u00b7 use Plan B</button></div></div>';
+  document.body.appendChild(ov);
+  ov.addEventListener('click',function(e){
+    const b = e.target.closest('button[data-a]'); if(!b) return;
+    const a = b.dataset.a; ov.remove();
+    safeStorage.setItem(PLANB_AUTO_KEY,'1');
+    if(a==='both'){ setPresent('Ayi',true); setPresent('Bianca',true); }
+    else if(a==='ayi'){ setPresent('Ayi',true); setAbsent('Bianca'); }
+    else if(a==='bianca'){ setPresent('Bianca',true); setAbsent('Ayi'); }
+    else { safeStorage.setItem(PLANB_KEY,'1'); try{ showToast('Plan B is on. Tap Here for Ayi and Bianca when they arrive.', 6000); }catch(e){} }
+    afterAttendanceChange();
+  });
+}
+// Heads-up for Round 3 (Plan B plays them there): still not tapped Here.
+function renderPlanBWarn(){
+  if(KC_VIEWER) return;
+  const host = document.getElementById('sec-now-playing'); if(!host) return;
+  let el = document.getElementById('planb-warn');
+  const ph = tryCurrentPhase();
+  const att = getAttendance();
+  const miss = PLANB_PLAYERS.filter(n=>att[n]!==true);
+  const show = planBActive() && miss.length && ph && ph.type==='round' && ph.n===3;
+  if(!show){ if(el) el.remove(); return; }
+  if(!el){ el = document.createElement('div'); el.id='planb-warn'; host.prepend(el); }
+  el.innerHTML = '<b>Round 3 plays '+miss.join(' and ')+'.</b> Not checked in yet. Tap Here for them in <u>Check-in</u> when they arrive, or press <u>Back to automatic</u> there and mark them No show.';
+}
+function tryCurrentPhase(){ try{ return currentPhase(); }catch(e){ return null; } }
+function planBOffer(){ const a=getAttendance(); return PLANB_PLAYERS.every(n=>a[n]===false); }
 function computeSchedule(){
   selectBaseSchedule();
   const out = {};
@@ -1596,6 +1692,11 @@ function computeSchedule(){
   const U = [];
   const CUT = rrCutoff();
   for(let n=1; n<=TOTAL_ROUNDS_PRINTED; n++){ if(!out[n]) U.push(n); }
+  if(planBActive()){
+    U.forEach(n=>{ out[n] = (n>=2 && PLAN_B[n]) ? cloneRound(PLAN_B[n]) : cloneRound(BASE_SCHEDULE[n]); if(n>=2 && PLAN_B[n]) info.rebuilt.push(n); });
+    info.mode = 'planb';
+    return {schedule:out, info};
+  }
   if(!active){
     U.forEach(n=> out[n] = cloneRound(BASE_SCHEDULE[n]));
     return {schedule:out, info};
@@ -1989,23 +2090,46 @@ function playoffEffectiveSlot(stage, slot, orig){
 // Candidates: eligible-seeded players who did NOT qualify for the top 12
 // (seed > 12), excluding anyone already pulled in as a sub in another
 // playoff slot, ordered by seed ascending.
-function playoffSubCandidates(currentValue){
+function plStageOf(name){
+  for(const st of ['pl1','pl2']){ const m=PLAYOFF_META[st]; if(m && m.seeds && m.seeds.some(sd=>seedName(sd)===name)) return st; }
+  return null;
+}
+// A placement match is cancelled when one of its players has been pulled into a different playoff slot as a sub
+// (someone could not play). Its remaining players are then free for open play on that court. Derived from the
+// substitutions, so undoing the swap brings the match back. The Side Dish Showdown needs both placement winners.
+function placementCancelled(stage){
+  if(stage==='pl3') return !!PLAYOFF_META.pl3 && (placementCancelled('pl1') || placementCancelled('pl2'));
+  const m = PLAYOFF_META[stage];
+  if(stage!=='pl1' && stage!=='pl2') return false;
+  if(!m || !m.seeds) return false;
+  const names = m.seeds.map(seedName), subs = getPlayoffSubs();
+  return Object.keys(subs).some(k=>{ const mm=/^sub_po_(\w+)_s\d+$/.exec(k); return mm && mm[1]!==stage && names.indexOf(subs[k])>=0; });
+}
+function cancelledOpenPlayers(stage){
+  if(stage==='pl3') return [];
+  const m = PLAYOFF_META[stage]; if(!m || !m.seeds) return [];
+  const subs = getPlayoffSubs(), pulled = new Set(Object.keys(subs).filter(k=>!k.startsWith('sub_po_'+stage+'_')).map(k=>subs[k]));
+  return m.seeds.map(seedName).filter(n=>!pulled.has(n));
+}
+function playoffSubCandidates(currentValue, stage){
   const subs = getPlayoffSubs();
   const used = new Set(Object.values(subs));
   if(currentValue) used.delete(currentValue);
-  return seedStandings()
-    .filter(p => p.eligibleSeed !== null && p.eligibleSeed > playoffQualifiers() && !used.has(p.name))
-    .sort((a,b)=> a.eligibleSeed - b.eligibleSeed);
+  const list = seedStandings().filter(p => p.eligibleSeed !== null && !used.has(p.name) && (
+      p.eligibleSeed > playoffQualifiers() ||
+      (function(){ const st=plStageOf(p.name); return st && st!==stage && !(getScores()[playoffKey(st)]); })()
+  ));
+  return list.sort((a,b)=> a.eligibleSeed - b.eligibleSeed);
 }
 function playoffSubSelectHTML(stage, slot, orig){
   const subs = getPlayoffSubs();
   const key = playoffSubKey(stage, slot);
   const current = subs[key] || '';
   const isSub = !!current;
-  const candidates = playoffSubCandidates(current);
+  const candidates = playoffSubCandidates(current, stage);
   const opts = [`<option value="">${escapeHTML(orig)}</option>`]
     .concat(candidates.map(p=>
-      `<option value="${escapeHTML(p.name)}" ${p.name===current?'selected':''}>Seed ${p.eligibleSeed} — ${escapeHTML(p.name)}</option>`
+      `<option value="${escapeHTML(p.name)}" ${p.name===current?'selected':''}>Seed ${p.eligibleSeed} — ${escapeHTML(p.name)}${(function(){ const st=plStageOf(p.name); return st? ' (from '+PLAYOFF_META[st].label+')' : ''; })()}</option>`
     )).join('');
   return slotHTML(current || orig, `<select class="sub-select po-sub-select${isSub?' is-sub':''}" data-stage="${stage}" data-slot="${slot}" data-orig="${escapeHTML(orig)}">${opts}</select>`, true);
 }
@@ -2097,10 +2221,12 @@ function playoffMatchComplete(stage){
   const meta = PLAYOFF_META[stage];
   if(!meta) return false;
   if(stage==='makeup' && makeupSkipped()) return true;
+  if(placementCancelled(stage)) return true;
   if(meta.timed) return validScore(s);
   return !!s && validPlayoffScore(meta.raceTo, s.a, s.b, isEnded(stage));
 }
 function playoffOutcome(stage){
+  if(placementCancelled(stage)) return null;
   if(!playoffMatchComplete(stage)) return null;
   const scores = getScores();
   const s = scores[playoffKey(stage)];
@@ -2157,6 +2283,16 @@ function matchHTMLPlayoff(stage){
         ${poHeaderHTML(stage, meta)}
         <div class="tie-warning" style="display:block;">Make-up match skipped \u2014 the playoffs can start.</div>
         <div class="reset-row" style="margin-top:.6rem;"><button class="round-reset" data-skip-makeup="0">Undo skip</button></div>
+      </div>
+    `;
+  }
+  if(placementCancelled(stage)){
+    const op = cancelledOpenPlayers(stage);
+    const why = stage==='pl3' ? 'It needs both placement winners, so Court '+meta.court+' is open play.' : 'A player from this match is playing elsewhere, so Court '+meta.court+' is open play.';
+    return `
+      <div class="match-card ${cls} ${(PO_THEME[stage]||{}).cls||''}">
+        ${poHeaderHTML(stage, meta)}
+        <div class="tie-warning" style="display:block;"><b>Cancelled \u00b7 open play.</b> ${why}${op.length?'<br>Free to play: '+op.map(escapeHTML).join(', '):''}</div>
       </div>
     `;
   }
@@ -2218,13 +2354,11 @@ function renderPlayoffCard(groupKey){
       <span class="round-num">${group.label}</span>
       <span class="round-phase gauntlet">${group.time}</span>${schedPillHTML('g'+group.key)}
       <button class="round-jump" data-jump="leaderboard">Leaderboard \u2193</button>
+      <button class="round-reset po-reset-head" data-reset-playoffs="1">Reset Playoffs</button>
     </div>
     <div class="champ-heading">${group.heading}</div>
     <div class="round-courts po-grid po-${group.stages.length===4?'eq':group.stages.length}" style="--cols:${group.stages.length};">
       ${group.stages.map(matchHTMLPlayoff).join('')}
-    </div>
-    <div class="reset-row" style="margin-top:.9rem;">
-      <button class="round-reset" data-reset-playoffs="1">Reset Playoffs</button>
     </div>
   `;
   return el;
@@ -3152,11 +3286,13 @@ function renderCheckin(){
 
   const cards = roster.map(n=>{
     const on = att[n]===true, off = att[n]===false, t = getTier(n);
-    const sub = walkIns.has(n) ? 'Walk-in' : (off ? 'No show' : (on ? 'Here' : 'Expected'));
+    const isLate = !!(info.late && info.late.indexOf(n)>=0);
+    const sub = walkIns.has(n) ? 'Walk-in' : (off ? (locked.length?'Not here yet':'No show') : (on ? (isLate?'Arrived late':'Here') : 'Expected'));
+    const inLbl = (off && locked.length) ? 'ARRIVED LATE' : 'CHECK-IN';
     return `<div class="ci-card ${on?'here':''}${off?'gone':''}">
       ${avatarHTML(n)}<div class="ci-name">${escapeHTML(n)}${sub?`<small>${sub}</small>`:''}</div>
       ${walkIns.has(n)?`<button type="button" class="ci-tier t${t}" data-ci-tier="${escapeHTML(n)}" title="Tap to change skill">${TIER_LABELS[t]}<small>skill</small></button><button type="button" class="ci-gen" data-ci-gen="${escapeHTML(n)}" title="Tap: M / F">${getGender(n)==='U'?'M/F?':getGender(n)}</button>`:''}
-      <button type="button" class="ci-pick ci-in${on?' on':''}" data-ci-in="${escapeHTML(n)}" aria-pressed="${on}">CHECK-IN</button>
+      <button type="button" class="ci-pick ci-in${on?' on':''}" data-ci-in="${escapeHTML(n)}" aria-pressed="${on}">${inLbl}</button>
       <button type="button" class="ci-pick ci-out${off?' on':''}" data-ci-out="${escapeHTML(n)}" aria-pressed="${off}">NO SHOW</button>
     </div>`;
   }).join('');
@@ -3354,12 +3490,14 @@ function initBackup(){
 
 function fullRecalc(){
   const y = window.scrollY;
+  try{ maybeAutoPlanB(); }catch(e){}
   applyPlayoffMode();
   buildNowPlaying();
   renderStandings();
   renderPodium();
   renderAddedPlayers();
   renderCheckin();
+  try{ renderPlanBWarn(); }catch(e){}
   try{ maybeAutoEmail(); }catch(e){}
   requestAnimationFrame(()=> window.scrollTo(0, y));
 }
@@ -3399,7 +3537,7 @@ function resetAll(){
       safeStorage.removeItem(TIMER_KEY);
       safeStorage.removeItem(STARTS_KEY);
       safeStorage.removeItem(MAKEUP_SKIP_KEY);
-      safeStorage.removeItem('kc_nov6_autosig'); lastAutoSig = null;
+      safeStorage.removeItem('kc_nov6_autosig'); safeStorage.removeItem(PLANB_KEY); safeStorage.removeItem(PLANB_AUTO_KEY); lastAutoSig = null;
       rebuildSchedule();
       fullRecalc();
     }
@@ -4110,6 +4248,7 @@ function wRoundHTML(n){
 function wStageHTML(stage){
   const meta = PLAYOFF_META[stage]; if(!meta) return '';
   const t = playoffTeams(stage); const sc = getScores()[playoffKey(stage)];
+  if(placementCancelled(stage)) return `<div class="wm c${meta.court}"><div class="wm-top"><span>${escapeHTML(meta.label.toUpperCase())} \u00b7 COURT ${meta.court}</span></div><div class="w-empty" style="padding:.6rem 0">Cancelled \u00b7 open play on Court ${meta.court}</div></div>`;
   if(stage==='makeup' && makeupSkipped()) return `<div class="wm c${meta.court}"><div class="wm-top"><span>${escapeHTML(meta.label.toUpperCase())}</span></div><div class="w-empty" style="padding:.6rem 0">Skipped</div></div>`;
   return wMatch(meta.label.toUpperCase()+' · COURT '+meta.court, meta.court, t&&t.teamA, t&&t.teamB, sc, meta.raceTo?('to '+meta.raceTo):'');
 }
@@ -4459,7 +4598,7 @@ function ensureSchedVersion(){
   if(KC_VIEWER) return;
   let cur = null; try{ cur = safeStorage.getItem(SCHED_VER_KEY); }catch(e){}
   if(cur !== SCHED_VER){
-    [SCORES_KEY,SUBS_KEY,PLAYOFF_SUBS_KEY,SKIPPED_KEY,ENDED_KEY,EXTRA_ROUNDS_KEY,NEW_PLAYERS_KEY,ATT_KEY,FROZEN_KEY,POMODE_KEY,TIMER_KEY,STARTS_KEY,MAKEUP_SKIP_KEY,'kc_nov6_autosig'].forEach(k=>{ try{ safeStorage.removeItem(k); }catch(e){} });
+    [SCORES_KEY,SUBS_KEY,PLAYOFF_SUBS_KEY,SKIPPED_KEY,ENDED_KEY,EXTRA_ROUNDS_KEY,NEW_PLAYERS_KEY,ATT_KEY,FROZEN_KEY,POMODE_KEY,TIMER_KEY,STARTS_KEY,MAKEUP_SKIP_KEY,PLANB_KEY,PLANB_AUTO_KEY,'kc_nov6_autosig'].forEach(k=>{ try{ safeStorage.removeItem(k); }catch(e){} });
     try{ safeStorage.setItem(SCHED_VER_KEY, SCHED_VER); }catch(e){}
   }
 }
@@ -4579,7 +4718,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
       $$('select.sub-select').forEach(function(sel){
         if(sel.dataset.kc) return; sel.dataset.kc=1;
         var b=document.createElement('button'); b.type='button'; b.className='pname'+(sel.classList.contains('is-sub')?' is-sub':'');
-        var txt=function(){ var o=sel.options[sel.selectedIndex]; return o? o.textContent.replace(' ★','').replace(/^Seed \d+ — /,''):'?'; };
+        var txt=function(){ var o=sel.options[sel.selectedIndex]; return o? o.textContent.replace(' ★','').replace(/^Seed \d+ — /,'').replace(/ \(from [^)]*\)$/,''):'?'; };
         b.textContent=txt(); sel.after(b);
         b.onclick=function(){ openSwap(sel, txt()); };
       });
@@ -4605,31 +4744,47 @@ document.addEventListener('DOMContentLoaded', ()=>{
       var here=roster.filter(function(n){return att[n]===true}).length, ns=roster.filter(function(n){return att[n]===false}).length, coming=roster.length-here-ns;
       var list=roster.filter(function(n){ return ciFilter==='all'|| (att[n]===undefined); });
       var cards=list.map(function(n){ var st=att[n]===false?'gone':att[n]===true?'here':'coming';
-        return '<button type="button" class="kcard '+(st==='here'?'':st)+'" data-kp="'+H(n)+'">'+avatarHTML(n)+'<div class="kn">'+H(n)+'</div><div class="ks">'+(st==='gone'?'NO SHOW':st==='here'?(walk.has(n)?'WALK-IN':'HERE'):'COMING')+'</div></button>'; }).join('');
+        return '<button type="button" class="kcard '+(st==='here'?'':st)+'" data-kp="'+H(n)+'">'+avatarHTML(n)+'<div class="kn">'+H(n)+'</div><div class="ks">'+(st==='gone'?'NO SHOW':st==='here'?(walk.has(n)?'WALK-IN':((info.late&&info.late.indexOf(n)>=0)?'ARRIVED LATE':'HERE')):'COMING')+'</div></button>'; }).join('');
       var swaps=Object.keys(info.swaps||{}).length, rebuilt=(info.rebuilt||[]).length, P=presentPlayers().length;
       var nsNames=roster.filter(function(n){return att[n]===false}), wNames=Array.from(walk).filter(function(n){return att[n]!==false});
       var ch=[];
       if(info.problem) ch.push(['r',info.problem]);
-      if(nsNames.length) ch.push(['r',nsNames.map(H).join(' and ')+' marked No show. Their spots were filled from the resting players.']);
+      if(nsNames.length && !planBActive()) ch.push(['r',nsNames.map(H).join(' and ')+' marked No show. Their spots were filled from the resting players.']);
       if(wNames.length) ch.push(['g',wNames.map(H).join(', ')+' added as walk-in'+(wNames.length>1?'s':'')+'.']);
+      if(planBActive()) ch.push(['g','Plan B is on. Ayi and Bianca are expected from Round 3.'+(safeStorage.getItem(PLANB_AUTO_KEY)?' You confirmed they weren\u2019t here after Round 1.':'')]);
+      else if(planBFlag()) ch.push(['r','Plan B is paused because someone else was marked No show or added. Rounds are on automatic.']);
       if(info.late&&info.late.length) ch.push(['g',info.late.map(H).join(', ')+' arrived late. They play without resting until they catch up on games.']);
-      if(swaps||rebuilt) ch.push(['g',(rebuilt?'Rounds '+info.rebuilt.join(', ')+' rebuilt. ':'')+(swaps?swaps+' round'+(swaps>1?'s':'')+' have cover players.':'')]);
+      if((swaps||rebuilt)&&info.mode!=='planb') ch.push(['g',(rebuilt&&info.mode!=='planb'?'Rounds '+info.rebuilt.join(', ')+' rebuilt. ':'')+(swaps?swaps+' round'+(swaps>1?'s':'')+' have cover players.':'')]);
       if(!ch.length) ch.push(['g','Everyone is expected. The printed schedule is running as planned.']);
-      ch.push(['x','If someone arrives late, tap Here. They catch up on games without resting.']);
+      
       var locked=lockedRoundList();
       wrap.innerHTML='<div class="kci"><div class="kci-main"><div class="kci-head"><div><b>Check-in</b><span>'+here+' here · '+coming+' coming · '+ns+' no show</span></div><div class="kci-chips"><button type="button" data-kf="all" class="'+(ciFilter==='all'?'on':'')+'">All ('+roster.length+')</button><button type="button" data-kf="wait" class="'+(ciFilter==='wait'?'on':'')+'">Not here yet</button><button type="button" data-ci="walkin">+ Walk-in</button><button type="button" data-ci="all">Check in everyone</button></div></div><div class="kci-grid">'+cards+'</div></div>'+
-       '<div class="kci-side"><div class="kbox"><h4>TAP A PLAYER</h4><div class="kmode"><button type="button" data-km="here" class="here '+(ciMode==='here'?'on':'')+'">Here</button><button type="button" data-km="ns" class="ns '+(ciMode==='ns'?'on':'')+'">No show</button></div><p style="font-size:13px;line-height:1.4;color:rgba(244,240,230,.7);margin:10px 0 0">Anyone not marked No show is expected. Rounds that haven’t started rebuild around who is here.'+(locked.length?' '+rangeText(locked)+' already started and won’t change.':'')+'</p></div>'+
-       '<div class="kbox chg"><h4>WHAT CHANGED</h4><div style="font-size:15px;font-weight:600;margin-bottom:10px">'+(info.mode==='printed'&&!swaps?'Schedule unchanged for '+P+' players':'Rounds rebuilt for '+P+' players')+'</div><ul class="kchg">'+ch.map(function(c){return '<li><i class="'+(c[0]==='r'?'r':'')+'"></i><span>'+c[1]+'</span></li>'}).join('')+'</ul><button type="button" class="kfull" data-ku="see">See changed rounds</button><button type="button" class="kfull" style="border:0;color:rgba(244,240,230,.7)" data-ku="undo"'+(hist.length?'':' disabled')+'>Undo last change</button></div></div></div>';
+       '<div class="kci-side"><div class="kbox"><h4>HOW IT WORKS</h4><p style="font-size:14px;line-height:1.45;color:rgba(244,240,230,.8);margin:6px 0 0"><b>Tap a player</b>, then choose <b>'+(locked.length?'Arrived late':'Here')+'</b> or <b>No show</b>. Anyone you don\u2019t mark is expected.'+(locked.length?' '+rangeText(locked)+' already started and won\u2019t change.':'')+'</p></div>'+
+       (planBOffer()||planBFlag()?'<div class="kbox pbx"><h4>PLAN B · AYI &amp; BIANCA LATE</h4><p>'+(planBActive()?'Running: your hand-built Rounds 2 to 9.':'Your hand-built Rounds 2 to 9. They join from Round 3.')+'</p><button type="button" class="kfull pbbtn" data-planb="'+(planBFlag()?'off':'on')+'">'+(planBFlag()?'Back to automatic':'Use Plan B schedule')+'</button></div>':'')+'<div class="kbox chg"><h4>WHAT CHANGED</h4><div style="font-size:15px;font-weight:600;margin-bottom:10px">'+(info.mode==='printed'&&!swaps?'Schedule unchanged for '+P+' players':(info.mode==='planb'?'Plan B schedule is running':'Rounds rebuilt for '+P+' players'))+'</div><ul class="kchg">'+ch.map(function(c){return '<li><i class="'+(c[0]==='r'?'r':'')+'"></i><span>'+c[1]+'</span></li>'}).join('')+'</ul>'+((info.mode!=='printed'||swaps||rebuilt)?'<button type="button" class="kfull" data-ku="see">See changed rounds</button>':'')+'<button type="button" class="kfull" style="border:0;color:rgba(244,240,230,.7)" data-ku="undo"'+(hist.length?'':' disabled')+'>Undo last change</button></div></div></div>';
+    }
+    function openStatus(n){
+      var a=getAttendance(), st=a[n]===true?'here':a[n]===false?'gone':'coming', started=lockedRoundList().length>0;
+      var ov=document.createElement('div'); ov.className='swap-pop';
+      var cur=st==='here'?(SCHEDULE_INFO.late&&SCHEDULE_INFO.late.indexOf(n)>=0?'ARRIVED LATE':'HERE'):st==='gone'?'NO SHOW':'COMING';
+      ov.innerHTML='<div class="sp-box"><div class="sp-h">'+H(n.toUpperCase())+' \u00b7 NOW '+cur+'</div><div class="sp-list">'+
+        '<button type="button" data-s="here"'+(st==='here'?' class="sp-next"':'')+'>'+(started?'Arrived late':'Here')+'</button>'+
+        '<button type="button" data-s="gone" style="background:#E8A388">No show</button>'+
+        (st!=='coming'?'<button type="button" data-s="coming" class="sp-x">Back to coming</button>':'')+
+        '<button type="button" class="sp-x" data-x="1">Cancel</button></div>'+
+        '<div class="sp-note">'+(started?'Rounds that haven\u2019t started rebuild around who is here. Played rounds don\u2019t change.':'The schedule updates straight away.')+'</div></div>';
+      document.body.appendChild(ov);
+      ov.addEventListener('click',function(e){ if(e.target===ov||e.target.dataset.x){ ov.remove(); return; }
+        var b=e.target.closest('button[data-s]'); if(!b) return; ov.remove();
+        if(b.dataset.s==='here') setPresent(n,true); else if(b.dataset.s==='gone') setAbsent(n); else setPresent(n,false);
+        afterAttendanceChange(); });
     }
     renderCheckin=renderCheckinNew;
     $('#checkin-wrap').addEventListener('click',function(e){
       var f=e.target.closest('[data-kf]'); if(f){ ciFilter=f.dataset.kf; renderCheckinNew(); return; }
       var m=e.target.closest('[data-km]'); if(m){ ciMode=m.dataset.km; renderCheckinNew(); return; }
-      var u=e.target.closest('[data-ku]'); if(u){ if(u.dataset.ku==='undo'){ if(hist.length){ var s=hist.pop(); restore(s); lastSnap=s; afterAttendanceChange0(); } } else showTab('schedule'); return; }
-      var p=e.target.closest('[data-kp]'); if(p){ var n=p.dataset.kp, a=getAttendance();
-        if(ciMode==='here'){ if(a[n]===true) setPresent(n,false); else setPresent(n,true); }
-        else { if(a[n]===false) setPresent(n,false); else setAbsent(n); }
-        afterAttendanceChange(); }
+      var pbb=e.target.closest('[data-planb]'); if(pbb){ if(pbb.dataset.planb==='on') safeStorage.setItem(PLANB_KEY,'1'); else safeStorage.removeItem(PLANB_KEY); afterAttendanceChange(); return; }
+      var u=e.target.closest('[data-ku]'); if(u){ if(u.dataset.ku==='undo'){ if(hist.length){ var s=hist.pop(); restore(s); lastSnap=s; afterAttendanceChange0(); } } else { window.kcOpenChanged=true; showTab('schedule'); if(window.kcRenderSchedule) window.kcRenderSchedule(); } return; }
+      var p=e.target.closest('[data-kp]'); if(p){ openStatus(p.dataset.kp); }
     });
     var afterAttendanceChange0=afterAttendanceChange;
     lastSnap=snap();
@@ -4711,12 +4866,12 @@ document.addEventListener('DOMContentLoaded', ()=>{
     // gate
     var g=document.createElement('div'); g.id='vgate'; document.body.appendChild(g);
     function gate(step){
-      g.classList.add('open');
+      g.classList.add('open'); g.classList.remove('vhero');
       var top='<div class="vg-top"><img alt="" src="'+LOGO_B64+'"><div><div style="font-size:20px;font-weight:800">'+H(EVENT_INFO.tagline)+'</div><div style="font-size:11px;letter-spacing:2px;color:rgba(244,240,230,.66)">FRI 20 NOV \u00b7 THE RALLY \u00b7 ALTONA</div></div></div>';
       if(step==='who'){
         g.innerHTML=top+'<h2>Who are you?</h2><p>Tap your name. We\u2019ll remember it on this phone.</p><div class="vg-grid">'+getRosterSorted().map(function(n){ return '<button type="button" class="vg-n" data-me="'+H(n)+'">'+avatarHTML(n)+'<span>'+H(n)+'</span></button>'; }).join('')+'</div>';
       } else {
-        g.innerHTML=top+'<h2>How are you joining tonight?</h2><button type="button" class="vg-opt p" data-m="play"><b>I\u2019m playing</b><span>See my matches, partners and rests</span></button><button type="button" class="vg-opt" data-m="watch"><b>I\u2019m watching</b><span>See every court and the leaderboard</span></button>';
+        g.classList.add('vhero'); g.innerHTML='<div class="vg-hero"><img alt="" src="'+LOGO_B64+'"><div class="vg-club">THE KITCHEN CLUB</div><div class="vg-title">'+H(EVENT_INFO.tagline)+'</div><div class="vg-sub">FRI 20 NOV \u00b7 THE RALLY \u00b7 ALTONA</div></div><h2 class="vg-q">How are you joining tonight?</h2><button type="button" class="vg-opt p" data-m="play"><b>I\u2019m playing</b><span>See my matches, partners and rests</span></button><button type="button" class="vg-opt" data-m="watch"><b>I\u2019m watching</b><span>See every court and the leaderboard</span></button>';
       }
     }
     g.addEventListener('click',function(e){
@@ -4739,7 +4894,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
       sh.classList.add('open');
     }
     document.addEventListener('click',function(e){
-      var tr=e.target.closest('#w-board-body tbody tr'); if(tr){ var nm=$('td.nm',tr); if(nm) openSheet(nm.textContent.trim()); return; }
+      var tr=e.target.closest('#w-board-body tbody tr'); if(tr){ var nm=$('td.nm',tr); if(nm){ var c=nm.cloneNode(true); Array.prototype.forEach.call(c.querySelectorAll('.av,.av-ini,img'),function(x){x.remove();}); openSheet(c.textContent.trim()); } return; }
       var acc=e.target.closest('.vacc > button'); if(acc){ var el=acc.parentNode; el.classList.toggle('open'); openSet[el.dataset.k]=el.classList.contains('open')?1:0; return; }
       if(e.target.closest('.vme')){ window.kcGate(); }
     });
@@ -5139,7 +5294,7 @@ body.kc10[data-tab=results] .section{padding-top:8px !important}
     var th=fin('third','SF1','SF2'); if(!stT('third')) th=[['Losers SF1','SF1',1],['Losers SF2','SF2',1]];
     match(XS,BY,'third',th[0],th[1],'BATTLE FOR 3RD · COURT '+(meta.third?meta.third.court:6));
     if(meta.pl1){
-      var pl=['pl1','pl2','pl3'].filter(function(k){return meta[k]}).map(function(k){ var t=stT(k), s=stScore(k); if(!t && k==='pl3') return '<div style="margin-top:4px;font-size:12px"><b style="color:#C4CE7B">C3 \u00b7 Side</b> Winners of PL1 v PL2</div>'; return t? '<div style="margin-top:4px;font-size:12px"><b style="color:#C4CE7B">C'+meta[k].court+'</b> '+nm(t.teamA)+' v '+nm(t.teamB)+(s?' · <b>'+s.a+'–'+s.b+'</b>':'')+'</div>' : ''; }).join('');
+      var pl=['pl1','pl2','pl3'].filter(function(k){return meta[k]}).map(function(k){ if(tryf(function(){return placementCancelled(k)},false)) return '<div style="margin-top:4px;font-size:12px"><b style="color:#C4CE7B">C'+meta[k].court+'</b> Cancelled \u00b7 open play</div>'; var t=stT(k), s=stScore(k); if(!t && k==='pl3') return '<div style="margin-top:4px;font-size:12px"><b style="color:#C4CE7B">C3 \u00b7 Side</b> Winners of PL1 v PL2</div>'; return t? '<div style="margin-top:4px;font-size:12px"><b style="color:#C4CE7B">C'+meta[k].court+'</b> '+nm(t.teamA)+' v '+nm(t.teamB)+(s?' · <b>'+s.a+'–'+s.b+'</b>':'')+'</div>' : ''; }).join('');
       els.push('<div style="position:absolute;left:'+XF+'px;top:'+BY+'px;width:'+W+'px;box-sizing:border-box;border:1px dashed rgba(196,206,123,.6);border-radius:10px;padding:10px 14px;font-size:13px;line-height:1.4;color:rgba(244,240,230,.8)"><span style="color:#C4CE7B;font-weight:800;letter-spacing:2px;font-size:11px">PLACEMENTS · COURT'+(meta.pl2?'S 3 AND 4':' 3')+'</span><br>Seeds 13 to '+(PLAYOFF_QUAL||20)+' · count toward the leaderboard'+pl+'</div>');
     }
     els.push('<div style="position:absolute;left:930px;top:'+(BY+120)+'px;width:200px;text-align:right;font-size:11px;line-height:1.4;color:rgba(244,240,230,.6)">Tabs show seeds. Seeds 1 to 4 skip the QFs. Seeds 1 and 2 pair with the lower-seeded QF winner, 3 and 4 with the higher.</div>');
@@ -5235,19 +5390,27 @@ body.kc10[data-tab=results] .section{padding-top:8px !important}
   function renderSchedule(){
     var host=$('#ks-list'); if(!host) return;
     var openKeys={}; $$('details',host).forEach(function(d){ if(d.open) openKeys[d.dataset.k]=1; });
-    var cur=tryf(currentPhase,{}), html='';
+    var cur=tryf(currentPhase,{}), html='', openChanged=!!window.kcOpenChanged, firstChg=null, anyChg=false;
+    function mkey(a,b){ return [a.slice().sort().join('+'),b.slice().sort().join('+')].sort().join('|'); }
+    function baseOf(n,c){ var r=BASE_SCHEDULE[n]; return r && r.courts[c] ? r.courts[c] : null; }
+    function changedCourts(n){ var out={}; roundCourts(n).forEach(function(c){ var t=effectiveTeams(n,c), b=baseOf(n,c); if(!b){ return; } if(mkey(t.teamA,t.teamB)!==mkey(b.teamA,b.teamB)) out[c]=b; }); return out; }
+    function nmc(a,base,all){ var bp=base?base.teamA.concat(base.teamB):null; var nn=bp?all.filter(function(x){return bp.indexOf(x)<0}).length:0; return a.map(function(x){ return (bp && nn<=2 && bp.indexOf(x)<0) ? '<b class="ks-new">'+H(x)+'</b>' : H(x); }).join(' &amp; '); }
     for(var n=1;n<=TOTAL_ROUNDS;n++){ if(!SCHEDULE[n]) continue;
       var courts=roundCourts(n), sc=getScores();
-      var isOpen = openKeys['r'+n] || (!Object.keys(openKeys).length && cur.type==='round' && cur.n===n);
-      html+='<details class="ks-card" data-k="r'+n+'"'+(isOpen?' open':'')+'><summary><span class="rn">Round '+n+'</span><span class="tm">'+H(roundTimeFor(n))+'</span>'+pill(n)+'</summary><div class="ks-body">'+
+      var chg=BASE_SCHEDULE[n]?changedCourts(n):{}, nChg=Object.keys(chg).length; if(nChg){ anyChg=true; if(!firstChg) firstChg=n; }
+      var isOpen = openKeys['r'+n] || (openChanged && nChg) || (!openChanged && !Object.keys(openKeys).length && cur.type==='round' && cur.n===n);
+      html+='<details class="ks-card'+(nChg?' ks-chg':'')+'" data-k="r'+n+'"'+(isOpen?' open':'')+'><summary><span class="rn">Round '+n+'</span><span class="tm">'+H(roundTimeFor(n))+'</span>'+(nChg?'<span class="ks-ctag">CHANGED \u00b7 '+nChg+' match'+(nChg>1?'es':'')+'</span>':'')+pill(n)+'</summary><div class="ks-body">'+
         courts.map(function(c){ var t=effectiveTeams(n,c), s=sc[scoreKey(n,c)], v=validScore(s);
-          return '<div class="ks-ct"><span class="c">COURT '+c+'</span><span>'+nm(t.teamA)+'<span class="vs">vs</span>'+nm(t.teamB)+'</span><span class="s">'+(v?s.a+'–'+s.b:'–')+'</span></div>'; }).join('')+
+          return '<div class="ks-ct'+(chg[c]?' chg':'')+'"><span class="c">COURT '+c+'</span><span>'+(chg[c]?nmc(t.teamA,chg[c],t.teamA.concat(t.teamB))+'<span class="vs">vs</span>'+nmc(t.teamB,chg[c],t.teamA.concat(t.teamB)):nm(t.teamA)+'<span class="vs">vs</span>'+nm(t.teamB))+'</span><span class="s">'+(v?s.a+'–'+s.b:'–')+'</span></div>'; }).join('')+
         ((SCHEDULE[n].rest&&SCHEDULE[n].rest.length)?'<div class="ks-rest">Resting: '+SCHEDULE[n].rest.map(H).join(', ')+'</div>':'')+
         '<button type="button" class="ks-edit" data-edit-r="'+n+'">Edit scores ›</button></div></details>';
     }
     html+=(PLAYOFF_STAGE_GROUPS||[]).map(function(g){ return '<details class="ks-card" data-k="g'+g.key+'"><summary><span class="rn">'+H(g.label)+'</span><span class="tm">'+H(g.time)+'</span><span class="ks-pill'+(tryf(function(){return playoffGroupComplete(g)},false)?' done':'')+'">'+(tryf(function(){return playoffGroupComplete(g)},false)?'DONE':'PLAYOFFS')+'</span></summary><div class="ks-body"><div class="ks-rest" style="color:rgba(244,240,230,.7)">'+H(g.heading)+'</div><button type="button" class="ks-edit" data-bracket="1">View bracket ›</button></div></details>'; }).join('');
+    if(anyChg) html='<div class="ks-legend"><i></i> Gold bar = this match changed from the printed schedule. Gold names are the cover players where only one or two changed.</div>'+html;
     host.innerHTML=html;
+    if(openChanged){ window.kcOpenChanged=false; var f=firstChg?host.querySelector('[data-k=r'+firstChg+']'):null; if(f) setTimeout(function(){ try{ f.scrollIntoView({behavior:'smooth',block:'start'}); }catch(e){} },80); }
   }
+  window.kcRenderSchedule=renderSchedule;
   window.kcEditRound=function(n){ window.kcSetView && window.kcSetView(n); kcShowTab('scores'); };
 
   function all(){ tryf(renderPlayoffs); tryf(podium); tryf(renderSchedule); tryf(renderResults); }
