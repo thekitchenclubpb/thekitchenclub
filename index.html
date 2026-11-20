@@ -524,6 +524,15 @@ footer.site-footer{text-align:center;color:var(--muted);font-size:.7rem;padding:
 .kc-ov-box small{color:var(--muted);}
 .kc-ov-box input[type=text]{width:100%;box-sizing:border-box;margin:.5rem 0;padding:.7rem .8rem;border-radius:10px;border:1.5px solid rgba(160,170,89,.5);background:var(--forest);color:var(--cream);font-size:1rem;font-family:var(--fb);}
 .kc-ov-row{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.7rem;}
+
+#kc-lock{position:fixed;inset:0;z-index:10050;background:#0F2A21;display:flex;align-items:center;justify-content:center;padding:24px;color:#F4F0E6;font-family:'Rubik',system-ui,sans-serif;text-align:center}
+#kc-lock .lk{max-width:420px;width:100%;display:flex;flex-direction:column;gap:14px;align-items:center}
+#kc-lock .lk-i{font-size:44px}
+#kc-lock h2{font-size:28px;margin:0}
+#kc-lock p{margin:0;color:rgba(244,240,230,.75);line-height:1.45}
+#kc-lock input{width:100%;box-sizing:border-box;font-size:20px;padding:14px 16px;border-radius:14px;border:2px solid rgba(244,240,230,.3);background:#173D31;color:#F4F0E6;text-align:center}
+#kc-lock button{width:100%;font:800 20px 'Rubik',system-ui,sans-serif;padding:14px;border-radius:14px;border:0;background:#A0AA59;color:#0F2A21;cursor:pointer}
+#kc-lock .lk-err{min-height:20px;color:#E58B6A;font-weight:600}
 .kc-ov-btn{flex:1 1 auto;min-height:44px;padding:0 1rem;border-radius:999px;border:1.5px solid rgba(160,170,89,.5);background:transparent;color:var(--olive);font-family:var(--fb);font-weight:700;cursor:pointer;}
 .kc-ov-btn.primary{background:var(--clay);border-color:var(--clay);color:var(--cream);}
 .kc-ov-link{word-break:break-all;background:var(--forest);border-radius:8px;padding:.5rem .6rem;font-size:.85rem;}
@@ -4193,10 +4202,32 @@ function openSyncPanel(){
 }
 
 // First contact for the scorer: never overwrite live data with an empty device by accident.
+
+function showKeyLock(reason){
+  if(KC_VIEWER) return;
+  if(document.getElementById('kc-lock')) return;
+  const o=document.createElement('div'); o.id='kc-lock';
+  o.innerHTML='<div class="lk"><div class="lk-i">\uD83D\uDD12</div><h2>Scoring is locked</h2>'+
+    '<p>'+(reason==='badkey'?'This device has an old or wrong scoring key.':'This device doesn\u2019t have the scoring key yet.')+' Enter the key to score and reset. Only the organiser has it.</p>'+
+    '<input id="kc-lock-in" type="password" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="Scoring key">'+
+    '<div class="lk-err" id="kc-lock-err"></div><button id="kc-lock-go" type="button">Unlock</button></div>';
+  document.body.appendChild(o);
+  const inp=o.querySelector('#kc-lock-in'), err=o.querySelector('#kc-lock-err'), go=o.querySelector('#kc-lock-go');
+  async function tryKey(){
+    const k=inp.value.trim(); if(!k){ err.textContent='Type the key first.'; return; }
+    err.textContent='Checking\u2026';
+    try{
+      const r=await fetch(SYNC_URL,{cache:'no-store',headers:{'x-write-key':k}}); const j=await r.json();
+      if(j.authed===true){ setSyncKey(k); o.remove(); sync.ready=false; sync.hold=false; setSync(''); syncBoot(); return; }
+      err.textContent='That key isn\u2019t right. Try again.';
+    }catch(e){ err.textContent='No connection. Check wifi and try again.'; }
+  }
+  go.onclick=tryKey; inp.addEventListener('keydown',function(e){ if(e.key==='Enter') tryKey(); });
+}
 async function syncBoot(){
   if(KC_VIEWER || !SYNC_OK) return;
   const key = syncKey();
-  if(!key){ setSync('nokey'); return; }
+  if(!key){ setSync('nokey'); showKeyLock('nokey'); return; }
   let j = null;
   try{
     const r = await fetch(SYNC_URL, {cache:'no-store', headers:{'x-write-key':key}});
@@ -4206,7 +4237,7 @@ async function syncBoot(){
     if(syncLocalIsEmpty()){ setSync('retry'); return; }   // empty device + no connection: wait, don't risk a blank push
     sync.ready = true; setSync('retry'); syncSoon(2500); return;   // rev unknown: first successful push will sync it
   }
-  if(j.authed===false){ setSync('badkey'); return; }
+  if(j.authed===false){ setSync('badkey'); showKeyLock('badkey'); return; }
   const serverStale = !!(j.data && Object.keys(j.data).length && j.data[SCHED_VER_KEY] !== SCHED_VER);
   const serverHas = j.data && !syncDataIsEmpty(j.data) && !serverStale;
   if(syncLocalIsEmpty() && serverHas){
