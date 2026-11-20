@@ -655,6 +655,7 @@ body.kc10 .app-header,body.kc10 .hero,body.kc10 .tab-bar,body.kc10 .site-footer,
 body.kc10 .section{display:none;max-width:1240px;margin:0 auto;padding:14px 20px 40px}
 body.kc10[data-tab=checkin] #sec-checkin,body.kc10[data-tab=scores] #sec-now-playing,body.kc10[data-tab=schedule] #sec-schedule,body.kc10[data-tab=leaderboard] #sec-leaderboard,body.kc10[data-tab=more] #sec-more{display:block}
 #kcbar{position:sticky;top:0;z-index:900;background:#0F2A21;display:flex;align-items:center;gap:14px;padding:12px 20px;border-bottom:1px solid rgba(244,240,230,.08);flex-wrap:wrap}
+#kcbar .kb-logo,#kcbar .kb-t,#kcbar .kb-s{cursor:pointer}
 #kcbar .kb-logo{width:40px;height:40px;border-radius:50%}
 #kcbar .kb-t{font-size:19px;font-weight:700;line-height:1.1}#kcbar .kb-s{font-size:11px;letter-spacing:2px;color:rgba(244,240,230,.66)}
 #kcbar nav{display:flex;gap:8px;margin:0 auto;flex-wrap:wrap}
@@ -4677,7 +4678,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
       [['checkin','Check-in'],['scores','Scores'],['schedule','Schedule'],['leaderboard','Leaderboard'],['more','More']].map(function(x){return '<button type="button" data-kt="'+x[0]+'">'+x[1]+'</button>'}).join('')+'</nav>';
     document.body.insertBefore(bar, document.body.firstChild);
     var sp=$('#sync-pill'); if(sp) bar.appendChild(sp);
-    bar.addEventListener('click',function(e){ var b=e.target.closest('[data-kt]'); if(b) showTab(b.dataset.kt); });
+    bar.addEventListener('click',function(e){ if(e.target.closest('.kb-logo,.kb-t,.kb-s')){ window.kcGoHome&&window.kcGoHome(); return; } var b=e.target.closest('[data-kt]'); if(b) showTab(b.dataset.kt); });
     // ---------- schedule + more sections ----------
     var sched=document.createElement('section'); sched.className='section'; sched.id='sec-schedule';
     sched.innerHTML='<h2 class="kh" style="font-size:24px;font-weight:800;margin:0 0 10px">Schedule</h2>';
@@ -4685,11 +4686,12 @@ document.addEventListener('DOMContentLoaded', ()=>{
     ph.style.display='none'; sched.appendChild(pw); sched.appendChild(ra);
     $('#sec-now-playing').after(sched);
     var more=document.createElement('section'); more.className='section'; more.id='sec-more';
-    more.innerHTML='<h2 style="font-size:24px;font-weight:800;margin:0 0 12px">More</h2><div class="kmore"><div class="kbox"><h4>RESULTS</h4><p>Send or save tonight’s results.</p><div id="more-backup"></div></div><div class="kbox"><h4>LIVE VIEW &amp; SYNC</h4><p>Players follow along on their phones.</p><button class="kci-btn" id="m-sync">Sync status</button> <button class="kci-btn" id="m-copy">Copy live link</button></div><div class="kbox"><h4>NUMBER PAD</h4><p>Pick the keypad used to enter scores.</p><button class="kci-btn" id="m-pad"></button></div><div class="kbox"><h4>SOUND</h4><p>Check the hand bell before you start.</p><button class="kci-btn" id="m-bell">🔔 Test bell</button></div><div class="kbox"><h4>RESET</h4><p>Clears every score and check-in. Do this before the event.</p><div id="more-reset"></div></div></div>';
+    more.innerHTML='<h2 style="font-size:24px;font-weight:800;margin:0 0 12px">More</h2><div class="kmore"><div class="kbox"><h4>RESULTS</h4><p>Send or save tonight’s results.</p><div id="more-backup"></div></div><div class="kbox"><h4>LIVE VIEW &amp; SYNC</h4><p>Players follow along on their phones.</p><button class="kci-btn" id="m-sync">Sync status</button> <button class="kci-btn" id="m-copy">Copy live link</button></div><div class="kbox"><h4>HOME SCREEN</h4><p>Go back to the welcome screen.</p><button class="kci-btn" id="m-home">Open home screen</button></div><div class="kbox"><h4>NUMBER PAD</h4><p>Pick the keypad used to enter scores.</p><button class="kci-btn" id="m-pad"></button></div><div class="kbox"><h4>SOUND</h4><p>Check the hand bell before you start.</p><button class="kci-btn" id="m-bell">🔔 Test bell</button></div><div class="kbox"><h4>RESET</h4><p>Clears every score and check-in. Do this before the event.</p><div id="more-reset"></div></div></div>';
     $('#sec-leaderboard').after(more);
     $('#more-backup').appendChild($('.backup-row')); $('#more-reset').appendChild($('#btn-reset-all').closest('.reset-row'));
     $('#m-sync').onclick=function(){ try{ openSyncPanel(); }catch(e){} };
     $('#m-copy').onclick=function(){ try{ navigator.clipboard.writeText(viewerLink()); showToast('Live link copied'); }catch(e){ showToast(viewerLink()); } };
+    $('#m-home').onclick=function(){ window.kcGoHome(); };
     function padLbl(){ $('#m-pad').textContent = devicePad() ? 'Using: Device keypad (tap to switch)' : 'Using: Built-in keypad (tap to switch)'; } padLbl();
     $('#m-pad').onclick=function(){ try{ localStorage.setItem('kc10_devpad', devicePad()?'0':'1'); }catch(e){} padLbl(); showToast(devicePad()?'Device keypad on':'Built-in keypad on'); };
     $('#m-bell').onclick=function(){ var b=$('#timer-test-bell'); if(b) b.click(); };
@@ -4844,7 +4846,9 @@ document.addEventListener('DOMContentLoaded', ()=>{
     var seen=false; try{ seen=sessionStorage.getItem('kc10_welcome')==='1'; }catch(e){}
     var hasData=Object.keys(getScores()).length>0;
     if(seen||hasData) w.style.display='none';
-    $('#wc-go').onclick=function(){ w.style.display='none'; try{ sessionStorage.setItem('kc10_welcome','1'); }catch(e){} showTab('checkin'); };
+    var homeFrom=null;
+    $('#wc-go').onclick=function(){ w.style.display='none'; try{ sessionStorage.setItem('kc10_welcome','1'); }catch(e){} showTab(homeFrom||'checkin'); homeFrom=null; };
+    window.kcGoHome=function(){ var cur=document.querySelector('#kcbar nav button.on, #kcbar nav button.active, #kcbar nav button[aria-current]'); homeFrom=cur?cur.dataset.kt:'scores'; $('#wc-go').textContent='Back to the app'; w.style.display='flex'; };
     $('#wc-reset').onclick=function(){ $('#btn-reset-all').click(); };
     showTab(hasData?'scores':'checkin');
     // ---------- number pad ----------
