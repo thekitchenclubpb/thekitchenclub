@@ -4407,10 +4407,9 @@ async function wDrawResults(){
   const txt=(s,px,y,col,wt,xx,al)=>{ x.font=wt+' '+px+'px '+F; x.fillStyle=col; x.textAlign=al||'center'; x.fillText(s,xx===undefined?540:xx,y); };
   const fit=(s,px,maxW,wt)=>{ let p=px; x.font=wt+' '+p+'px '+F; while(x.measureText(s).width>maxW && p>20){ p-=2; x.font=wt+' '+p+'px '+F; } return p; };
   const logo = await wLoadImg(LOGO_B64);
-  if(logo){ const h=170, w=logo.width*h/logo.height; x.drawImage(logo,540-w/2,235,w,h); }
-  txt('THE KITCHEN CLUB',44,455,'#A0AA59',800); txt('PICKLEBALL SOCIAL CLUB',26,495,'rgba(244,240,230,.7)',500);
-  txt('DOUBLES CHAMPIONS',70,610,'#E8C547',800);
-  x.fillStyle='#E8C547'; x.fillRect(440,632,200,4);
+  txt('THE KITCHEN CLUB',50,580,'#A0AA59',800); txt('PICKLEBALL SOCIAL CLUB',28,624,'rgba(244,240,230,.7)',500);
+  txt('DOUBLES CHAMPIONS',78,770,'#E8C547',800);
+  x.fillStyle='#E8C547'; x.fillRect(430,796,220,5);
   const ava = async (name,cx,cy,d,ring)=>{
     const img = await wLoadImg(KC_HI[name]||PLAYER_PHOTOS[name]);
     x.save(); x.beginPath(); x.arc(cx,cy,d/2,0,Math.PI*2); x.closePath(); x.clip();
@@ -4421,21 +4420,21 @@ async function wDrawResults(){
     x.restore();
     x.beginPath(); x.arc(cx,cy,d/2,0,Math.PI*2); x.lineWidth=ring; x.strokeStyle=ring>6?'#E8C547':'rgba(244,240,230,.55)'; x.stroke();
   };
-  const w=champ.winner; const cy=830, d=290;
-  await ava(w[0],330,cy,d,10); await ava(w[1],750,cy,d,10);
+  const w=champ.winner; const cy=1000, d=320;
+  await ava(w[0],320,cy,d,10); await ava(w[1],760,cy,d,10);
   txt('&',80,cy+28,'#A0AA59',800);
-  [[w[0],330],[w[1],750]].forEach(([n,cx])=>{ const p=fit(n,64,430,800); txt(n,p,cy+d/2+85,'#F4F0E6',800,cx); });
+  [[w[0],320],[w[1],760]].forEach(([n,cx])=>{ const p=fit(n,64,430,800); txt(n,p,cy+d/2+85,'#F4F0E6',800,cx); });
   txt('Final score '+champ.score,38,cy+d/2+165,'#E8C547',700);
-  x.fillStyle='rgba(160,170,89,.35)'; x.fillRect(90,1175,900,2);
+  x.fillStyle='rgba(160,170,89,.35)'; x.fillRect(90,1385,900,2);
   const row=async(label,pair,sub,y0)=>{
     txt(label,28,y0+34,'#A0AA59',800,90,'left');
     await ava(pair[0],150,y0+130,120,3); await ava(pair[1],290,y0+130,120,3);
     const s=pair.join(' & '); const p=fit(s,46,610,700); txt(s,p,y0+128,'#F4F0E6',700,380,'left');
     txt(sub,30,y0+172,'rgba(244,240,230,.7)',500,380,'left');
   };
-  await row('RUNNER-UP',champ.loser,'Championship \u00b7 '+champ.score,1200);
-  await row('3RD PLACE',third.winner,'Battle for 3rd \u00b7 '+third.score,1420);
-  txt(EVENT_LABEL,26,1665,'rgba(244,240,230,.6)',500);
+  await row('RUNNER-UP',champ.loser,'Championship \u00b7 '+champ.score,1415);
+  await row('3RD PLACE',third.winner,'Battle for 3rd \u00b7 '+third.score,1640);
+  txt(EVENT_LABEL,28,1880,'rgba(244,240,230,.6)',500);
   return c;
 }
 const wRes = {key:'', busy:false, blob:null, url:''};
@@ -5265,12 +5264,12 @@ body.kc10[data-tab=results] .section{padding-top:8px !important}
 <script>
 (function(){
   var _w=window.wDrawResults; if(typeof _w!=='function') return;
-  var svg='<svg xmlns="http://www.w3.org/2000/svg" width="160" height="220" viewBox="0 0 160 220"><defs><linearGradient id="gd" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#F6E08A"/><stop offset=".55" stop-color="#E3C463"/><stop offset="1" stop-color="#B8922F"/></linearGradient></defs><g fill="none" stroke="url(#gd)" stroke-width="5" stroke-linejoin="round"><g transform="translate(22,66) rotate(22)"><rect x="-12" y="-18" width="24" height="32" rx="8"/></g><g transform="translate(138,66) rotate(-22)"><rect x="-12" y="-18" width="24" height="32" rx="8"/></g></g><path d="M30 42H130C130 92 108 114 80 114C52 114 30 92 30 42Z" fill="url(#gd)"/><rect x="24" y="36" width="112" height="9" rx="4.5" fill="#F6E08A"/><rect x="64" y="26" width="32" height="8" rx="4" fill="url(#gd)"/><circle cx="80" cy="14" r="13" fill="#A0AA59"/><circle cx="80" cy="74" r="31" fill="#0F2A21" stroke="#F6E08A" stroke-width="3"/><rect x="76" y="112" width="8" height="10" fill="url(#gd)"/><g fill="none" stroke="url(#gd)" stroke-width="3"><ellipse cx="80" cy="142" rx="20" ry="22"/><ellipse cx="80" cy="142" rx="11" ry="22"/><line x1="80" y1="120" x2="80" y2="164"/></g><rect x="76" y="162" width="8" height="8" fill="url(#gd)"/><rect x="48" y="170" width="64" height="9" rx="3" fill="url(#gd)"/><rect x="32" y="179" width="96" height="34" rx="5" fill="#173D32" stroke="#E3C463" stroke-width="2"/><rect x="46" y="187" width="68" height="18" rx="2" fill="url(#gd)"/></svg>';
+  var svg='<svg xmlns="http://www.w3.org/2000/svg" width="160" height="220" viewBox="0 0 160 220"><defs><linearGradient id="gd" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#F6E08A"/><stop offset=".55" stop-color="#E3C463"/><stop offset="1" stop-color="#B8922F"/></linearGradient></defs><g fill="none" stroke="url(#gd)" stroke-width="5" stroke-linejoin="round"><g transform="translate(22,66) rotate(22)"><rect x="-12" y="-18" width="24" height="32" rx="8"/></g><g transform="translate(138,66) rotate(-22)"><rect x="-12" y="-18" width="24" height="32" rx="8"/></g></g><path d="M30 42H130C130 92 108 114 80 114C52 114 30 92 30 42Z" fill="url(#gd)"/><rect x="24" y="36" width="112" height="9" rx="4.5" fill="#F6E08A"/><rect x="64" y="26" width="32" height="8" rx="4" fill="url(#gd)"/><circle cx="80" cy="14" r="13" fill="#A0AA59"/><circle cx="80" cy="74" r="31" fill="#0F2A21" stroke="#F6E08A" stroke-width="3"/><clipPath id="lc"><circle cx="80" cy="74" r="28"/></clipPath><image href="'+LOGO_B64+'" x="52" y="46" width="56" height="56" preserveAspectRatio="xMidYMid slice" clip-path="url(#lc)"/><rect x="76" y="112" width="8" height="10" fill="url(#gd)"/><g fill="none" stroke="url(#gd)" stroke-width="3"><ellipse cx="80" cy="142" rx="20" ry="22"/><ellipse cx="80" cy="142" rx="11" ry="22"/><line x1="80" y1="120" x2="80" y2="164"/></g><rect x="76" y="162" width="8" height="8" fill="url(#gd)"/><rect x="48" y="170" width="64" height="9" rx="3" fill="url(#gd)"/><rect x="32" y="179" width="96" height="34" rx="5" fill="#173D32" stroke="#E3C463" stroke-width="2"/><rect x="46" y="187" width="68" height="18" rx="2" fill="url(#gd)"/></svg>';
   window.wDrawResults=async function(){
     var c=await _w();
     try{
       var img=await new Promise(function(r){ var i=new Image(); i.onload=function(){r(i)}; i.onerror=function(){r(null)}; i.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(svg); });
-      if(img){ var x=c.getContext('2d'), h=190, w=h*160/220; x.drawImage(img,540-w/2,34,w,h); }
+      if(img){ var x=c.getContext('2d'), h=470, w=h*160/220; x.drawImage(img,540-w/2,50,w,h); }
     }catch(e){}
     return c;
   };
