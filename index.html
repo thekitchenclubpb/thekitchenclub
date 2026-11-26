@@ -1391,7 +1391,7 @@ function setPresent(name, on){
 function getTiers(){ return kcGetJSON(TIER_KEY, {}); }
 function getTier(name){ const t = getTiers()[name]; return (t>=1&&t<=5) ? t : (DEFAULT_TIERS[name]||3); }
 function setAbsent(name){ const a = getAttendance(); a[name] = false; saveAttendance(a); }
-const PAST_PLAYERS = {"Eden":3,"Arran B.":3,"Ave P.":3,"Beng D.":3,"Denis M.":3,"John D.":3,"Marchelle P.":3,"Mark L.":3,"Nic A.":3,"Nikki A.":3,"Patrick O.":3,"Pipoy H.":3,"Queenie M.":3,"Razel A.":3,"Vann M.":3,"John Louie":3,"SJ":3,"Joshua":3,"Ethan":3,"AJ":3,"Cedric":3,"Althea":3,"Bea":3,"Martha":3,"Camille":3,"Nin":3,"Jason Ella":3,"Kel":3,"George":3,"Timothy":3,"Gela":3,"JB":3,"Alex":3,"Vish":3,"Michael":3}; // returning club players not on tonight's roster (all default to Mid)
+const PAST_PLAYERS = {"John M.":3,"Daveen O.":3,"Vincent V.":3,"Matt Z.":3,"Jo Z.":3,"Charmaine D.":3,"Nic A.":3,"Bea C.":3,"Ave P.":3,"Jason E.":3,"Nikki A.":3,"Ayi A.":3,"Marchelle P.":3,"Crissa A.":3,"Nin C.":3,"Avdhoot A.":3,"Kel P.":3,"George K.":3,"David T.":3,"Mark L.":3,"Timothy V.":3,"Angela T.":3,"Gela":3,"JB V.":3,"Beng D.":3,"Vann M.":3,"Vish D.":3,"Queenie M.":3,"Arran B.":3,"Pipoy H.":3,"Patrick O.":3,"John D.":3,"Denis M.":3,"Michael P.":3,"Eden":3}; // returning club players not on tonight's roster (all default to Mid)
 function setTier(name, t){ const o = getTiers(); o[name] = t; safeStorage.setItem(TIER_KEY, JSON.stringify(o)); }
 function cycleTier(name){ setTier(name, getTier(name)===5 ? 1 : getTier(name)+1); }
 function tiersCustomised(){ return Object.keys(getTiers()).length>0 || Object.keys(DEFAULT_TIERS).length>0; }
@@ -8249,7 +8249,7 @@ var st2=document.createElement('style');st2.textContent=mcss;document.head.appen
 
 var lk=document.createElement('link');lk.rel='stylesheet';lk.href='https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600&family=Rubik:wght@400;500;600;700;800&display=swap';document.head.appendChild(lk);
 
-var S={tab:(function(){try{return Object.keys(getScores()).length?'matches':'checkin';}catch(e){return 'checkin';}})(),view:null,pg:null,lbm:'full',bkp:'main',sheet:null,ent:null,npd:false};
+var S={tab:(function(){try{var _t=sessionStorage.getItem('kcs_tab');if(_t&&/^(checkin|matches|lb|bracket|more|results)$/.test(_t))return _t;}catch(e){}try{return Object.keys(getScores()).length?'matches':'checkin';}catch(e){return 'checkin';}})(),view:null,pg:null,lbm:'full',bkp:'main',sheet:null,ent:null,npd:false};
 function E(s){return escapeHTML(String(s));}
 function sd(f,d){try{var v=f();return v===undefined?(d===undefined?null:d):v;}catch(e){return d===undefined?null:d;}}
 var TONES=[['#DDD6C2','#4B6358']];
@@ -8468,6 +8468,13 @@ function matches(){
 }
 
 // ---------- CHECK-IN ----------
+function ciCard(n,att,info){
+    var s=att[n],isHere=s===true,isGone=s===false,late=isHere&&info.late&&info.late.indexOf(n)>-1;
+    var t=tone(n),state=isHere?(late?'Arrived late':'Here'):(isGone?'Away':'Not yet');
+    var av44=PLAYER_PHOTOS[n]?'<img alt="" src="'+PLAYER_PHOTOS[n]+'" style="width:44px;height:44px;border-radius:22px;object-fit:cover;display:block">':'<span style="width:44px;height:44px;border-radius:22px;background:'+t[0]+';color:'+t[1]+';display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:600">'+E(kcInitials(n))+'</span>';
+    return '<button data-ci="'+E(n)+'" style="background:'+P+';border:'+(isHere?'2px solid '+O:'1.5px dashed #B3AB93')+';border-radius:14px;padding:8px 10px;display:flex;align-items:center;gap:10px;opacity:'+(isHere?1:.7)+';min-height:0;text-align:left;color:'+F+'">'+
+     '<span style="position:relative;width:44px;height:44px;flex:none;display:block">'+av44+'<span style="position:absolute;right:-3px;bottom:-3px;width:18px;height:18px;border-radius:9px;background:'+(isHere?O:(isGone?CL:B))+';color:'+(isGone?'#fff':F)+';font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center">'+(isHere?'✓':(isGone?'×':''))+'</span></span>'+
+     '<span style="display:flex;flex-direction:column;line-height:1.2;min-width:0"><span style="font-size:15px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+E(n)+'</span><span style="font-size:13px;color:'+M+'">'+state+'</span></span></button>';}
 function checkin(){
   var ro=getRosterSorted(),att=getAttendance(),here=ro.filter(function(n){return att[n]===true;}).length,gone=ro.filter(function(n){return att[n]===false;}).length,coming=ro.length-here-gone;
   var info=SCHEDULE_INFO||{},P_=presentPlayers().length,lines=[];
@@ -8475,18 +8482,12 @@ function checkin(){
   else{lines.push((info.rebuilt&&info.rebuilt.length?'Rounds '+info.rebuilt.join(', ')+' rebuilt':'Schedule adjusted')+' for '+P_+' players.');if(info.late&&info.late.length)lines.push(info.late.join(', ')+' arrived late and play without resting until level on games.');}
   if(info.problem)lines.push(info.problem);
   var rows=Math.max(1,Math.ceil(ro.length/5));
-  var cards=ro.map(function(n){
-    var s=att[n],isHere=s===true,isGone=s===false,late=isHere&&info.late&&info.late.indexOf(n)>-1;
-    var t=tone(n),state=isHere?(late?'Arrived late':'Here'):(isGone?'Away':'Not yet');
-    var av44=PLAYER_PHOTOS[n]?'<img alt="" src="'+PLAYER_PHOTOS[n]+'" style="width:44px;height:44px;border-radius:22px;object-fit:cover;display:block">':'<span style="width:44px;height:44px;border-radius:22px;background:'+t[0]+';color:'+t[1]+';display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:600">'+E(kcInitials(n))+'</span>';
-    return '<button data-ci="'+E(n)+'" style="background:'+P+';border:'+(isHere?'2px solid '+O:'1.5px dashed #B3AB93')+';border-radius:14px;padding:8px 10px;display:flex;align-items:center;gap:10px;opacity:'+(isHere?1:.7)+';min-height:0;text-align:left;color:'+F+'">'+
-     '<span style="position:relative;width:44px;height:44px;flex:none;display:block">'+av44+'<span style="position:absolute;right:-3px;bottom:-3px;width:18px;height:18px;border-radius:9px;background:'+(isHere?O:(isGone?CL:B))+';color:'+(isGone?'#fff':F)+';font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center">'+(isHere?'✓':(isGone?'×':''))+'</span></span>'+
-     '<span style="display:flex;flex-direction:column;line-height:1.2;min-width:0"><span style="font-size:15px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+E(n)+'</span><span style="font-size:13px;color:'+M+'">'+state+'</span></span></button>';}).join('');
+  var cards=ro.map(function(n){return ciCard(n,att,info);}).join('');
   var inn=here+(info.late?0:0);
   return '<div style="flex:1;min-height:0;display:flex;gap:16px;padding:16px">'+
    '<div style="flex:1;min-width:0;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));grid-template-rows:repeat('+rows+',minmax(0,1fr));gap:10px">'+cards+'</div>'+
    '<div style="width:284px;flex:none;display:flex;flex-direction:column;gap:14px;overflow:auto">'+
-   '<div style="background:'+F+';color:'+C+';border-radius:16px;padding:16px 18px;display:flex;flex-direction:column;gap:4px"><span class="rb" style="font-size:13px;font-weight:600;letter-spacing:.1em;color:'+LT+'">CHECKED IN</span><span class="rb" style="font-size:56px;font-weight:700;line-height:1.05">'+inn+' <span style="font-size:24px;color:'+LT+'">of '+ro.length+'</span></span><span style="font-size:13px;color:'+LT+'">'+(coming?coming+' still to arrive':'Everyone is here')+(gone?' · '+gone+' away':'')+'</span></div>'+
+   '<div style="background:'+F+';color:'+C+';border-radius:16px;padding:16px 18px;display:flex;flex-direction:column;gap:4px"><span class="rb" style="font-size:13px;font-weight:600;letter-spacing:.1em;color:'+LT+'">CHECKED IN</span><span class="rb" style="font-size:56px;font-weight:700;line-height:1.05"><span data-cin>'+inn+'</span> <span style="font-size:24px;color:'+LT+'">of '+ro.length+'</span></span><span data-cis style="font-size:13px;color:'+LT+'">'+(coming?coming+' still to arrive':'Everyone is here')+(gone?' · '+gone+' away':'')+'</span></div>'+
    '<div style="background:#fff;border:1px solid '+B+';border-radius:16px;padding:14px;display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center"><span class="rb" style="font-weight:700;font-size:13px;letter-spacing:.08em;color:'+F+'">SCAN TO SEE YOUR MATCHES</span><div style="width:200px;height:200px;border-radius:10px;overflow:hidden">'+kcQR(KC_LIVE_URL,200,F)+'</div><span style="font-size:13px;font-weight:600;color:'+F+'">'+E(KC_LIVE_URL.replace('https://',''))+'</span></div>'+
    '<div style="background:'+P+';border:1px solid '+B+';border-radius:16px;padding:14px 16px;display:flex;flex-direction:column;gap:6px"><span class="rb" style="font-weight:700;font-size:13px;letter-spacing:.08em">SCHEDULE</span><span style="font-size:15px;font-weight:600">'+P_+' players · '+COURT_IDS.length+' courts</span><span style="font-size:13px;color:'+M+'">'+TOTAL_ROUNDS_PRINTED+' rounds. Locked once the first score is in.</span>'+lines.map(function(l){return '<span style="font-size:13px;color:'+M+'">'+E(l)+'</span>';}).join('')+'</div>'+
    '<button data-a="walkin" style="min-height:52px;border-radius:12px;border:0;background:'+O+';color:'+F+';font-weight:600;font-size:15px">Add late player</button>'+
@@ -8762,10 +8763,19 @@ function doSheet(a){
   else if(k==='mv'){if(p[1]==='r')kcMoveCourt(+p[2],+p[3],+p[4]);else kcMovePlayoff(p[2],+p[3]);}
   S.sheet=null;
 }
+var _ciT=null;
 function ciTap(n){
   var s=getAttendance()[n];
   if(s===undefined)setPresent(n,true);else if(s===true)setAbsent(n);else setPresent(n,false);   // not yet -> here -> away -> not yet
-  afterAttendanceChange();
+  // instant feedback: refresh just this card and the counter, then rebuild the schedule once the taps settle
+  try{
+    var att=getAttendance(),info=SCHEDULE_INFO||{},btn=document.querySelector('button[data-ci="'+n.replace(/"/g,'')+'"]');
+    if(btn){var t=document.createElement('div');t.innerHTML=ciCard(n,att,info);btn.replaceWith(t.firstChild);}
+    var ro=getRosterSorted(),here=ro.filter(function(x){return att[x]===true;}).length,gone=ro.filter(function(x){return att[x]===false;}).length,coming=ro.length-here-gone;
+    var c1=document.querySelector('[data-cin]'),c2=document.querySelector('[data-cis]');
+    if(c1)c1.textContent=here;if(c2)c2.textContent=(coming?coming+' still to arrive':'Everyone is here')+(gone?' \u00B7 '+gone+' away':'');
+  }catch(e){afterAttendanceChange();return;}
+  clearTimeout(_ciT);_ciT=setTimeout(function(){_ciT=null;afterAttendanceChange();},700);
 }
 
 // ---------- shell ----------
@@ -8793,7 +8803,7 @@ function boot(){
     else if(d.eend!==undefined){S.ent.ended=!S.ent.ended;S.ent.err='';}
     else if(d.x!==undefined){if(t.classList.contains('scrim')&&e.target!==t)return;S.sheet=null;S.ent=null;}
     else if(d.do){doSheet(d.do);}
-    else if(d.tab){S.tab=d.tab;}
+    else if(d.tab){S.tab=d.tab;try{sessionStorage.setItem('kcs_tab',S.tab);}catch(e){}}
     else if(d.view){S.view=d.view==='po'?'po':+d.view;}
     else if(d.pg){S.pg=d.pg;S.view='po';}
     else if(d.lbm){S.lbm=d.lbm;}
@@ -8805,7 +8815,7 @@ function boot(){
     else if(d.a){doAction(d.a);}
     render(true);
   });
-  render(true);setInterval(function(){if(!S.ent)render(false);},600);
+  render(true);setInterval(function(){var w=document.getElementById('welcome');if(!document.body.classList.contains('kcs-on')&&(!w||w.style.display==='none'||!w.style.display)){document.body.classList.add('kcs-on');document.documentElement.classList.add('kcb-s');}if(!S.ent)render(false);},600);
 }
 function go(){setTimeout(boot,400);}
 if(document.readyState!=='loading')go();else document.addEventListener('DOMContentLoaded',go);
