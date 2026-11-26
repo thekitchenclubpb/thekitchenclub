@@ -944,7 +944,7 @@ body.kc-viewer #watch-nav button[hidden],body.kc-viewer #watch-nav button[data-w
 #numpad .np-grid .np-ok{background:#A0AA59;color:#0F2A21}
 .ex-gen{margin-left:auto;background:#0F2A21;color:#F4F0E6;border:1px solid rgba(255,255,255,.2);border-radius:6px;padding:.2rem}
 </style>
-</head>
+<style id="kc-early">html.kcb,html.kcb body{background:#F4F0E6!important}html.kcb-d,html.kcb-d body{background:#0F2A21!important}html.kcb-p body>*:not(#kcp):not(script):not(style):not(link){display:none!important}html.kcb-d body>*:not(#kcd):not(script):not(style):not(link){display:none!important}html.kcb-s body>#kcbar,html.kcb-s body>.app-header,html.kcb-s body>.hero,html.kcb-s body>main,html.kcb-s body>nav,html.kcb-s body>section,html.kcb-s body>form,html.kcb-s body>footer,html.kcb-s body>#welcome{display:none!important}</style><script>(function(){var p=location.pathname,h=document.documentElement;h.className+=' kcb '+(/\/live\/?$/.test(p)?'kcb-p':(/\/display\/?$/.test(p)?'kcb-d':'kcb-s'));})();</script></head>
 <body>
 
 <header class="app-header">
@@ -7942,8 +7942,8 @@ function now(){
       (w.rest?'<div style="display:flex;flex-direction:column;align-items:center"><span class="rb" style="font-size:24px;font-weight:700;letter-spacing:.2em;color:#C9D08F">THIS ROUND</span><span class="rb" style="font-size:64px;font-weight:700;color:'+O+';margin-top:6px">REST</span></div><span style="font-size:16px;color:#C9D08F">Back next round</span>':'<div style="display:flex;flex-direction:column;align-items:center;line-height:.9"><span class="rb" style="font-size:24px;font-weight:700;letter-spacing:.2em;color:#C9D08F">GO TO COURT</span><span class="rb" style="font-size:min(230px,28vh);font-weight:700;color:'+O+';line-height:1;margin-top:6px">'+kcCN(w.court)+'</span></div>'+heroPair(n,w))+'</div>'+
       (lg&&lg.done?'<div style="flex:none;background:'+SEL+';border-radius:18px;padding:12px 16px;display:flex;flex-direction:column;gap:2px"><span class="rb" style="font-size:12px;font-weight:600;letter-spacing:.1em;color:'+M+'">YOUR LAST GAME \u00B7 ROUND '+cc.done+'</span><span style="font-size:17px;font-weight:600">'+(lg.my>lg.their?'Won':'Lost')+' '+lg.my+'\u2013'+lg.their+' with '+E(lg.partner)+'</span></div>':'');
     } else {
-      var w=where(n,p.n);
-      hd=header('Hi, '+n,{kicker:'ROUND '+p.n+' OF '+TOTAL_ROUNDS_PRINTED,right:timerBlock});
+      var w=where(n,p.n),rt0=String(sd(function(){return roundTimeFor(p.n);})||'').replace(/^(\d+:\d+)(?:\s*[AP]M)?\s*[\u2013-].*?([AP]M)\s*$/i,'$1 $2');if(rt0.length>9)rt0='';
+      hd=header('Hi, '+n,{kicker:'ROUND '+p.n+' OF '+TOTAL_ROUNDS_PRINTED+(rt0?' \u00B7 '+rt0:''),right:timerBlock});
       body=(w.rest?'<div style="flex:1;min-height:0;background:'+F+';color:'+C+';border-radius:26px;padding:20px 18px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;text-align:center"><span class="rb" style="font-size:14px;font-weight:600;letter-spacing:.2em;color:#C9D08F">THIS ROUND</span><span class="rb" style="font-size:90px;font-weight:700;color:'+O+';line-height:1">REST</span><span style="font-size:16px;color:#C9D08F">Take a breather. You\'re back next round.</span></div>':
       '<div style="flex:1;min-height:0;background:'+F+';color:'+C+';border-radius:26px;padding:20px 18px;display:flex;flex-direction:column;align-items:center;justify-content:space-between;text-align:center"><span class="rb" style="font-size:26px;font-weight:700;letter-spacing:.16em;color:#C9D08F">YOU\'RE ON</span><div style="display:flex;flex-direction:column;align-items:center;line-height:.9"><span class="rb" style="font-size:30px;font-weight:700;letter-spacing:.2em">COURT</span><span class="rb" style="font-size:min(260px,32vh);font-weight:700;color:'+O+';line-height:.95">'+kcCN(w.court)+'</span></div>'+heroPair(n,w)+'</div>')+nextDashed(n);
     }
@@ -8319,7 +8319,8 @@ function ringCard(label,line1,line2,chip,btnTop,btnSub,btnAct,noCo){
    '<button data-a="tpause" style="flex:1;min-height:34px;border-radius:9px;'+(run?'border:0;background:'+O+';color:'+F:'border:1.5px solid '+DK+';background:transparent;color:#7FA08F')+';font-weight:600;font-size:13px">Pause</button>'+
    '<button data-a="treset" style="flex:1;min-height:34px;border-radius:9px;border:1.5px solid '+O+';background:transparent;color:'+C+';font-weight:600;font-size:13px">Reset</button></div>'+
    (noCo?'':'<div style="display:flex;gap:6px;align-items:center"><span class="rb" style="font-size:12px;font-weight:600;letter-spacing:.04em;color:'+LT+';flex:1">CHANGEOVER</span>'+[1,2,5].map(function(m){var on=coMins===m;return '<button data-a="co|'+m+'" style="min-height:30px;padding:0 8px;white-space:nowrap;border-radius:9px;border:1px solid '+(on?C:DK)+';background:'+(on?C:'transparent')+';color:'+(on?F:C)+';font-weight:600;font-size:13px">'+m+' min</button>';}).join('')+'</div>')+
-   (btnTop?'<button data-a="'+btnAct+'" style="min-height:38px;border-radius:9px;border:0;background:'+C+';color:'+F+';display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px" title="'+E(btnSub)+'">'+E(btnTop)+'</button>':'')+'</div>';
+   (btnTop?'<button data-a="'+btnAct+'" style="min-height:38px;border-radius:9px;border:0;background:'+C+';color:'+F+';display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px" title="'+E(btnSub)+'">'+E(btnTop)+'</button>':'')+
+   (co&&btnAct==='nextgo'&&safeStorage.getItem('kc_nov6_undorem')!==null&&+safeStorage.getItem('kc_nov6_lastend')?'<button data-a="undoend" style="min-height:34px;border-radius:9px;border:1.5px solid '+C+';background:transparent;color:'+C+';font-weight:600;font-size:13px">Undo \u00B7 back to round '+(+safeStorage.getItem('kc_nov6_lastend'))+'</button>':'')+'</div>';
 }
 
 // ---------- standings helpers ----------
@@ -8491,7 +8492,7 @@ function checkin(){
    '<button data-a="walkin" style="min-height:52px;border-radius:12px;border:0;background:'+O+';color:'+F+';font-weight:600;font-size:15px">Add late player</button>'+
    '<button data-a="rebuild" style="min-height:52px;border-radius:12px;border:1.5px solid '+F+';background:transparent;color:'+F+';font-weight:600;font-size:15px">Rebuild schedule</button>'+
    '<button data-a="allhere" style="min-height:40px;border-radius:12px;border:0;background:transparent;color:'+M+';font-weight:600;font-size:13px;text-decoration:underline">Check in everyone</button>'+
-   '<span style="font-size:13px;color:'+M+';margin-top:auto">Tap a player to mark them here or away.</span></div></div>';
+   '<span style="font-size:13px;color:'+M+';margin-top:auto">Tap a player to cycle: here, away, not yet.</span></div></div>';
 }
 
 // ---------- LEADERBOARD ----------
@@ -8730,8 +8731,9 @@ function doAction(a){
   if(k==='sync'){sd(openSyncPanel);return;}
   if(k==='tstart'){startTimer();return;} if(k==='tpause'){pauseTimer();return;} if(k==='treset'){resetTimer();return;}
   if(k==='co'){selectChangeover(+p[1]);return;}
-  if(k==='endround'){var pp=phase(),E=endingRound(pp),T=kcNextLive(E);safeStorage.setItem('kc_nov6_lastend',String(E));safeStorage.setItem('kc_nov6_coto',T?String(T):'');sd(syncSoon);startChangeover();return;}
-  if(k==='nextgo'){endChangeover();startTimer();return;}
+  if(k==='endround'){var pp=phase(),E=endingRound(pp),T=kcNextLive(E);safeStorage.setItem('kc_nov6_lastend',String(E));safeStorage.setItem('kc_nov6_undorem',String(Math.round(rawTimer().rem)));safeStorage.setItem('kc_nov6_undotot',String(timerTotalSecs||600));safeStorage.setItem('kc_nov6_coto',T?String(T):'');sd(syncSoon);startChangeover();return;}
+  if(k==='nextgo'){safeStorage.removeItem('kc_nov6_undorem');safeStorage.removeItem('kc_nov6_undotot');endChangeover();startTimer();return;}
+  if(k==='undoend'){var ur=+safeStorage.getItem('kc_nov6_undorem'),ut=+safeStorage.getItem('kc_nov6_undotot')||600;['kc_nov6_lastend','kc_nov6_coto','kc_nov6_undorem','kc_nov6_undotot'].forEach(function(x){safeStorage.removeItem(x);});endChangeover();timerTotalSecs=ut;timerRemainingSecs=ur>0?ur:ut;renderTimerDisplay();sd(syncSoon);return;}
   if(k==='endpo'){pauseTimer();resetTimer();return;}
   if(k==='startpo'){confirmAction('Start the playoffs?','The round robin is locked and the quarterfinals begin. Playoffs run without a changeover.',function(){safeStorage.setItem('kc_nov6_postart','1');fullRecalc();S.tab='matches';S.view='po';},'Yes, start playoffs');return;}
   if(k==='walkin'){walkinChooser();return;}
@@ -8742,7 +8744,7 @@ function doAction(a){
   if(k==='modescorer'){return;}
   if(k==='tvqr'){safeStorage.setItem('kc_nov6_tvqr',safeStorage.getItem('kc_nov6_tvqr')==='1'?'0':'1');sd(syncSoon);return;}
   if(k==='npbuilt'){S.npd=false;return;} if(k==='npdev'){S.npd=true;return;}
-  if(k==='home'){var w=document.getElementById('welcome');if(w){document.body.classList.remove('kcs-on');w.style.display='flex';}return;}
+  if(k==='home'){var w=document.getElementById('welcome');if(w){document.body.classList.remove('kcs-on');document.documentElement.classList.remove('kcb-s');w.style.display='flex';}return;}
   if(k==='csv'){downloadResultsCSV();return;}
   if(k==='shareimg'){sd(function(){wShareAction('save');});return;}
   if(k==='skippick'){S.sheet='skip';return;}
@@ -8762,7 +8764,7 @@ function doSheet(a){
 }
 function ciTap(n){
   var s=getAttendance()[n];
-  if(s===true)setAbsent(n);else setPresent(n,true);
+  if(s===undefined)setPresent(n,true);else if(s===true)setAbsent(n);else setPresent(n,false);   // not yet -> here -> away -> not yet
   afterAttendanceChange();
 }
 
