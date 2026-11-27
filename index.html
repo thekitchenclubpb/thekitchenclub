@@ -8294,7 +8294,19 @@ function tone(n){return TONES[0];}
 function av(n,z,fs,extra){var src=PLAYER_PHOTOS[n];
   if(src)return '<img alt="" src="'+src+'" style="width:'+z+'px;height:'+z+'px;border-radius:'+(z/2)+'px;object-fit:cover;flex:none;'+(extra||'')+'">';
   var t=tone(n);return '<span style="width:'+z+'px;height:'+z+'px;border-radius:'+(z/2)+'px;background:'+t[0]+';color:'+t[1]+';display:flex;align-items:center;justify-content:center;font-size:'+(fs||Math.round(z*.4))+'px;font-weight:600;flex:none;'+(extra||'')+'">'+E(kcInitials(n))+'</span>';}
-function phase(){return sd(currentPhase,{type:'round',n:1});}
+function phase(){var p=sd(currentPhase,{type:'round',n:1});
+  // HOLD: once every court is scored the engine jumps to the next round. Keep the organiser on the
+  // round whose game clock is still in progress until they tap End round / the clock hits 0.
+  try{
+    var live=(timerMode==='game')&&(timerRunning||(timerRemainingSecs<(timerTotalSecs||600)));
+    if(live&&!started()){
+      var le=+safeStorage.getItem('kc_nov6_lastend')||0,prev=0;
+      if(p.type==='round')prev=p.n-1;
+      while(prev>1&&SCHEDULE[prev]&&sd(function(){return isRoundSkipped(prev);},false))prev--;
+      if(prev>=1&&SCHEDULE[prev]&&prev>le&&p.type==='round'&&prev<p.n)return {type:'round',n:prev,held:true};
+    }
+  }catch(e){}
+  return p;}
 function apOf(){var t=sd(function(){return roundTimeFor(1);},'')||'';return t.slice(-2)||'PM';}
 function startOf(r){var t=sd(function(){return roundTimeFor(r);},'')||'';if(!t)return '';var a=t.split(' – ')[0];if(!/[AP]M/.test(a))a+=' '+t.slice(-2);return a;}
 function started(){return !!safeStorage.getItem('kc_nov6_postart')||sd(anyPlayoffsStarted,false);}
@@ -8483,7 +8495,7 @@ function matches(){
       var msg='';window.kcHideNote=!started()||p.type==='round';
       if(p.type==='round')msg='Finish the round robin first. Seeds are set once every round is scored.';
       body=(msg?'<div style="grid-column:1/-1;background:'+SEL+';border-radius:12px;padding:10px 14px;font-size:14px">'+msg+'</div>':'')+
-        (!msg&&!started()?'<div style="grid-column:1/-1;background:'+SEL+';border-radius:12px;padding:8px 14px;font-size:14px;display:flex;align-items:center;gap:12px"><span style="flex:1"><b>Round robin complete · seeds are set.</b> Playoffs run without a changeover.</span><button data-a="startpo" style="min-height:40px;padding:0 16px;border-radius:10px;border:0;background:'+F+';color:'+C+';font-weight:600;font-size:13px">Start playoffs</button></div>':'')+
+        (!msg&&!started()?'<div style="grid-column:1/-1;background:'+SEL+';border-radius:12px;padding:8px 14px;font-size:14px;display:flex;align-items:center;gap:12px"><span style="flex:1"><b>Round robin complete · seeds are set.</b> Playoffs run without a changeover.</span><button data-a="podium" style="min-height:40px;padding:0 14px;border-radius:10px;border:1.5px solid '+F+';background:transparent;color:'+F+';font-weight:600;font-size:13px">Show podium</button><button data-a="startpo" style="min-height:40px;padding:0 16px;border-radius:10px;border:0;background:'+F+';color:'+C+';font-weight:600;font-size:13px">Start playoffs</button></div>':'')+
         poGrid(g);
     }
     side=poSide(g);bottom=g?poBottom(g):'';
@@ -8751,6 +8763,15 @@ function swapSheet(){
   }
   return sheetWrap(h);
 }
+function podSig(){try{return (sd(seedStandings,[])||[]).slice(0,3).map(function(p){return p.name;}).join('|');}catch(e){return '';}}
+function podiumSeen(){try{return localStorage.getItem('kcs_podium_seen')===podSig();}catch(e){return false;}}
+function podiumSheet(){
+  var list=sd(seedStandings,[])||[];
+  var h='<div style="display:flex;flex-direction:column;align-items:center;gap:4px;text-align:center"><img src="'+LOGO_B64+'" alt="The Kitchen Club badge" style="width:72px;height:72px;object-fit:contain"><span class="rb" style="font-size:38px;font-weight:700">Head Chefs</span><span style="font-size:13px;font-weight:700;letter-spacing:.16em;color:'+O+'">CHEF LEADERS AFTER THE ROUND ROBIN</span><span style="font-size:14px;color:'+M+'">Top 3 after all '+TOTAL_ROUNDS_PRINTED+' rounds</span></div>'+top3(list)+
+   '<div style="font-size:13px;color:'+M+';text-align:center">Seeds for the playoffs are set from this same ranking.</div>'+
+   '<button data-x="1" style="min-height:56px;border-radius:14px;border:0;background:'+F+';color:'+C+';font-family:Rubik,sans-serif;font-size:17px;font-weight:600">Continue to playoffs</button>';
+  return '<div class="scrim lite" data-x="1"><div style="width:min(760px,100%);max-height:100%;overflow:auto;background:'+C+';color:'+F+';border-radius:24px;padding:24px;display:flex;flex-direction:column;gap:16px;box-shadow:0 12px 40px rgba(0,0,0,.35)" data-in="1">'+h+'</div></div>';
+}
 function skipSheet(){
   var h='<div style="display:flex;flex-direction:column;gap:2px"><span class="rb" style="font-size:24px;font-weight:700">Skip a round</span><span style="font-size:14px;color:'+M+'">A skipped round is left out of the standings and won’t block the playoffs.</span></div><div style="display:grid;grid-template-columns:repeat(5,1fr);gap:8px">';
   for(var r=1;r<=TOTAL_ROUNDS;r++){var sk=sd(function(){return isRoundSkipped(r);},false);h+='<button data-a="skip|'+r+'" style="min-height:52px;border-radius:12px;border:'+(sk?'2px solid '+CL:'1px solid '+B)+';background:'+(sk?'#F0D9CF':P)+';color:'+F+';font-family:Rubik,sans-serif;font-weight:600;font-size:15px">R'+r+(sk?'<br><small>skipped</small>':'')+'</button>';}
@@ -8784,6 +8805,7 @@ function doAction(a){
   if(k==='nextgo'){safeStorage.removeItem('kc_nov6_undorem');safeStorage.removeItem('kc_nov6_undotot');endChangeover();startTimer();return;}
   if(k==='undoend'){var ur=+safeStorage.getItem('kc_nov6_undorem'),ut=+safeStorage.getItem('kc_nov6_undotot')||600;['kc_nov6_lastend','kc_nov6_coto','kc_nov6_undorem','kc_nov6_undotot'].forEach(function(x){safeStorage.removeItem(x);});endChangeover();timerTotalSecs=ut;timerRemainingSecs=ur>0?ur:ut;renderTimerDisplay();sd(syncSoon);return;}
   if(k==='endpo'){pauseTimer();resetTimer();return;}
+  if(k==='podium'){S.sheet='podium';return;}
   if(k==='startpo'){confirmAction('Start the playoffs?','The round robin is locked and the quarterfinals begin. Playoffs run without a changeover.',function(){safeStorage.setItem('kc_nov6_postart','1');fullRecalc();S.tab='matches';S.view='po';},'Yes, start playoffs');return;}
   if(k==='walkin'){walkinChooser();return;}
   if(k==='rebuild'){afterAttendanceChange();return;}
@@ -8831,9 +8853,10 @@ function ciTap(n){
 var root;
 function render(force){
   if(!root)return;
+  try{if(!S.ent&&!S.sheet&&!podiumSeen()&&!started()){var _p=sd(currentPhase,null);if(_p&&_p.type==='playoffs'&&phase().type!=='round')S.sheet='podium';}}catch(e){}
   var body=S.tab==='checkin'?checkin():S.tab==='lb'?lb():S.tab==='bracket'?bracket():S.tab==='more'?more():(S.tab==='results'&&resultsReady())?results():matches();
   var ov='';
-  if(S.ent)ov=entryView();else if(S.sheet){ov=S.sheet==='skip'?skipSheet():(S.sheet.indexOf('cm|')===0?courtSheet():swapSheet());}
+  if(S.ent)ov=entryView();else if(S.sheet){ov=S.sheet==='podium'?podiumSheet():S.sheet==='skip'?skipSheet():(S.sheet.indexOf('cm|')===0?courtSheet():swapSheet());}
   var html=top()+body+ov;
   if(!force&&html===root._h)return;
   var _o=root.querySelector('.lbm'),_y=_o?_o.scrollTop:0;root.innerHTML=html;root._h=html;var _n=root.querySelector('.lbm');if(_n)_n.scrollTop=_y;
@@ -8850,7 +8873,7 @@ function boot(){
     else if(d.esave!==undefined){entrySave();}
     else if(d.eside){S.ent.side=d.eside;}
     else if(d.eend!==undefined){S.ent.ended=!S.ent.ended;S.ent.err='';}
-    else if(d.x!==undefined){if(t.classList.contains('scrim')&&e.target!==t)return;S.sheet=null;S.ent=null;}
+    else if(d.x!==undefined){if(t.classList.contains('scrim')&&e.target!==t)return;if(S.sheet==='podium'){try{localStorage.setItem('kcs_podium_seen',podSig());}catch(e){}}S.sheet=null;S.ent=null;}
     else if(d.do){doSheet(d.do);}
     else if(d.tab){S.tab=d.tab;try{sessionStorage.setItem('kcs_tab',S.tab);localStorage.setItem('kcs_tab',S.tab);}catch(e){}}
     else if(d.view){S.view=d.view==='po'?'po':+d.view;}
