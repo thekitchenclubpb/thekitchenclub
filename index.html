@@ -8060,8 +8060,9 @@ function lb(){
   '<div style="flex:none;padding:10px 16px;background:#E8E2D0;border-bottom:1px solid '+B+';display:flex;flex-direction:column;gap:8px"><div class="seg"><button data-lb="full" class="'+(S.lb==='full'?'on':'')+'">Full Course</button><button data-lb="rr" class="'+(S.lb==='rr'?'on':'')+'">Round-Robin seeding</button></div>'+
   '<span style="font-size:12px;color:'+M+'">'+(S.lb==='full'?'Every match played tonight':'Round robin only · sets the playoff seeds')+'</span><input class="s" id="kcq" placeholder="Find a player" value="'+E(S.q)+'">'+
   '<div style="display:flex;gap:12px;font-size:12.5px;color:'+M+';align-items:center"><span class="row" style="gap:4px"><i style="width:12px;height:12px;border-radius:6px;background:'+F+'"></i>Top 4</span><span class="row" style="gap:4px"><i style="width:12px;height:12px;border-radius:6px;background:'+O+'"></i>5–12 · in the hunt</span><span class="row" style="gap:4px"><i style="width:12px;height:12px;border-radius:6px;border:1.5px solid #B3AB93"></i>Placement</span></div></div>'+
-  '<div class="body" style="padding:8px 12px"><div class="row" style="padding:0 8px 4px;font-size:11.5px;font-weight:600;letter-spacing:.08em;color:'+M+'"><span style="width:26px"></span><span style="width:30px"></span><span style="flex:1">PLAYER</span><span style="width:34px;text-align:right">W–L</span><span style="width:44px;text-align:right">WIN %</span><span style="width:34px;text-align:right">+/–</span></div>'+rows+'</div>';
+  '<div class="body" style="padding:8px 12px"><div class="row" style="padding:0 8px 4px;font-size:11.5px;font-weight:600;letter-spacing:.08em;color:'+M+'"><span style="width:26px"></span><span style="width:30px"></span><span style="flex:1">PLAYER</span><span style="width:34px;text-align:right">W–L</span><span style="width:44px;text-align:right">WIN %</span><span style="width:34px;text-align:right">+/–</span></div>'+rows+csvRow()+'</div>';
 }
+function csvRow(){return '<div style="display:flex;flex-direction:column;gap:8px;padding:14px 4px 8px"><span style="font-size:12.5px;color:'+M+';text-align:center">Every match, round by round, plus the leaderboard, in one file.</span><div class="row" style="gap:8px"><button class="btn" data-csv="share" style="flex:1">Share results file</button><button class="btn o" data-csv="dl" style="flex:1">Download CSV</button></div></div>';}
 function seedMap(){var m={};(sd(seedStandings)||[]).forEach(function(p){if(p.eligibleSeed)m[p.name]=p.eligibleSeed;});return m;}
 function brTeams(t,sm,n){function f(a){return a.map(function(x){return (x===n?'You':E(x))+(sm[x]?' ('+sm[x]+')':'');}).join(' &amp; ');}return [f(t.teamA),f(t.teamB)];}
 function bracket(){
@@ -8111,7 +8112,7 @@ function results(){
   '<div class="body" style="display:flex;flex-direction:column;gap:10px"><div style="text-align:center"><span class="rb kcpp" style="display:inline-block;font-size:34px;font-weight:800">Congratulations!</span></div><div style="background:'+P+';border:1px solid '+B+';border-radius:22px;padding:16px;display:flex;flex-direction:column;align-items:center;gap:14px;text-align:center">'+trophy(112)+'<div class="row" style="gap:22px;align-items:flex-start">'+pair(pd.first,92)+'</div><span style="font-size:13px;color:'+M+'">Won the championship final '+E(pd.score)+'</span></div>'+
   '<div class="row" style="gap:10px;align-items:stretch">'+small('2ND',O,F,pd.second)+small('3RD',CL,'#fff',pd.third)+'</div>'+
   (mine>-1?'<div class="row" style="background:'+SEL+';border-radius:16px;padding:10px 14px;gap:12px"><span class="rb" style="width:44px;height:44px;border-radius:22px;background:'+F+';color:'+C+';display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700">'+(mine+1)+'</span><div style="line-height:1.2"><span class="lbl">YOUR FINISH</span><div style="font-size:15px;font-weight:600">'+E(n)+' · '+(mine+1)+' of '+list.length+'</div><div style="font-size:12px;color:'+M+'">'+list[mine].w+' wins · '+list[mine].l+' losses</div></div></div>':'')+
-  '<div class="row" style="gap:8px"><button class="btn" data-share="1" style="flex:1">Share result</button><button class="btn o" data-tab="lb" style="flex:1">Full leaderboard</button></div></div>'+confettiP();
+  '<div class="row" style="gap:8px"><button class="btn" data-share="1" style="flex:1">Share result</button><button class="btn o" data-tab="lb" style="flex:1">Full leaderboard</button></div>'+csvRow()+'</div>'+confettiP();
 }
 var ALL=(function(){try{return window.__ALLTIME||{};}catch(e){return {};}})();
 function allTime(name){
@@ -8208,7 +8209,7 @@ function boot(){
   document.body.classList.add('kcp-on');
   root=document.createElement('div');root.id='kcp';document.body.appendChild(root);
   root.addEventListener('click',function(e){
-    var t=e.target.closest('[data-go],[data-me],[data-tab],[data-view],[data-lb],[data-prof],[data-close],[data-share],[data-rnd],[data-br]');if(!t)return;
+    var t=e.target.closest('[data-go],[data-me],[data-tab],[data-view],[data-lb],[data-prof],[data-close],[data-share],[data-csv],[data-rnd],[data-br]');if(!t)return;
     var d=t.dataset;
     if(d.go==='who'){S.screen='who';}
     else if(d.go==='watch'){ls('kc10_mode','watch');ls('kc10_me',null);S.screen=null;S.tab='now';}
@@ -8222,6 +8223,7 @@ function boot(){
     else if(d.prof){S.sheet=d.prof;}
     else if(d.close!==undefined){if(t.classList.contains('sheet')&&e.target!==t)return;S.sheet=null;}
     else if(d.share){share();return;}
+    else if(d.csv){try{if(d.csv==='share')shareResults();else downloadResultsCSV();}catch(x){}return;}
     render(true);
   });
   root.addEventListener('input',function(e){if(e.target.id==='kcq'){S.q=e.target.value;var h=root._h;root._h=null;var pos=e.target.selectionStart;render(true);var i=document.getElementById('kcq');if(i){i.focus();i.setSelectionRange(pos,pos);}}});
