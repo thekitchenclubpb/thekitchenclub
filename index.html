@@ -8295,15 +8295,14 @@ function av(n,z,fs,extra){var src=PLAYER_PHOTOS[n];
   if(src)return '<img alt="" src="'+src+'" style="width:'+z+'px;height:'+z+'px;border-radius:'+(z/2)+'px;object-fit:cover;flex:none;'+(extra||'')+'">';
   var t=tone(n);return '<span style="width:'+z+'px;height:'+z+'px;border-radius:'+(z/2)+'px;background:'+t[0]+';color:'+t[1]+';display:flex;align-items:center;justify-content:center;font-size:'+(fs||Math.round(z*.4))+'px;font-weight:600;flex:none;'+(extra||'')+'">'+E(kcInitials(n))+'</span>';}
 function phase(){var p=sd(currentPhase,{type:'round',n:1});
-  // HOLD: once every court is scored the engine jumps to the next round. Keep the organiser on the
-  // round whose game clock is still in progress until they tap End round / the clock hits 0.
+  // ONE RULE: scoring never moves the screen. The round on screen changes only when the organiser taps
+  // "End round N" (or the game clock reaches 0:00 and the changeover starts on its own).
   try{
-    var live=(timerMode==='game')&&(timerRunning||(timerRemainingSecs<(timerTotalSecs||600)));
-    if(live&&!started()){
-      var le=+safeStorage.getItem('kc_nov6_lastend')||0,prev=0;
-      if(p.type==='round')prev=p.n-1;
+    if(timerMode==='game'&&!started()&&p.type==='round'&&p.n>1){
+      var le=+safeStorage.getItem('kc_nov6_lastend')||0,prev=p.n-1;
       while(prev>1&&SCHEDULE[prev]&&sd(function(){return isRoundSkipped(prev);},false))prev--;
-      if(prev>=1&&SCHEDULE[prev]&&prev>le&&p.type==='round'&&prev<p.n)return {type:'round',n:prev,held:true};
+      var nextScored=false;try{roundCourts(p.n).forEach(function(k){if(validScore(getScores()[scoreKey(p.n,k)]))nextScored=true;});}catch(e){}
+      if(prev>=1&&SCHEDULE[prev]&&prev>le&&!nextScored&&!sd(function(){return isRoundSkipped(prev);},false))return {type:'round',n:prev,held:true};
     }
   }catch(e){}
   return p;}
@@ -8362,7 +8361,7 @@ function ringCard(label,line1,line2,chip,btnTop,btnSub,btnAct,noCo){
   var state=co?'CHANGEOVER':(run?'IN-GAME':(t.rem<t.total-1?'PAUSED':'READY'));
   return '<div style="background:'+(co?CL:F)+';color:'+C+';border-radius:16px;padding:12px 14px;display:flex;flex-direction:column;justify-content:space-between;gap:8px;flex:1 1 0;min-height:0;overflow:hidden">'+
    '<div style="display:flex;align-items:center;justify-content:space-between;gap:8px"><span class="rb" style="font-size:13px;font-weight:700;letter-spacing:.12em;color:'+(co?C:LT)+'">'+state+'</span><span class="rb" style="font-size:14px;font-weight:700;padding:4px 12px;border-radius:99px;white-space:nowrap;background:'+(st.k==='late'?(co?C:CL):(st.k==='early'?LT:O))+';color:'+(st.k==='late'?(co?CL:'#fff'):F)+'">'+E(st.t)+'</span></div>'+
-   '<div style="text-align:center;line-height:1"><span class="rb" style="font-size:78px;font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:-.01em">'+E(timerText())+'</span></div>'+
+   '<div style="text-align:center;line-height:1"><span data-a="tset" class="rb" style="font-size:78px;font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:-.01em;cursor:pointer;display:inline-block;padding:0 8px">'+E(timerText())+'</span>'+(!run&&!co?'<div style="font-size:11px;letter-spacing:.08em;color:'+LT+';margin-top:2px">TAP TIME TO EDIT</div>':'')+'</div>'+
    '<div role="img" aria-label="Time left" style="height:8px;border-radius:4px;background:'+(co?'#D9A08A':DK)+';overflow:hidden"><div style="width:'+pct+'%;height:8px;border-radius:4px;background:'+(co?C:O)+'"></div></div>'+
    '<div style="display:flex;gap:8px"><button data-a="tstart" style="flex:1;min-height:34px;border-radius:9px;'+(run?'border:1.5px solid '+DK+';background:transparent;color:#7FA08F':'border:0;background:'+O+';color:'+F)+';font-weight:600;font-size:13px">Start</button>'+
    '<button data-a="tpause" style="flex:1;min-height:34px;border-radius:9px;'+(run?'border:0;background:'+O+';color:'+F:'border:1.5px solid '+DK+';background:transparent;color:#7FA08F')+';font-weight:600;font-size:13px">Pause</button>'+
@@ -8521,10 +8520,11 @@ function matches(){
 function ciCard(n,att,info){
     var s=att[n],isHere=s===true,isGone=s===false,late=isHere&&info.late&&info.late.indexOf(n)>-1;
     var t=tone(n),state=isHere?(late?'Arrived late':'Here'):(isGone?'Away':'Not yet');
-    var av44=PLAYER_PHOTOS[n]?'<img alt="" src="'+PLAYER_PHOTOS[n]+'" style="width:44px;height:44px;border-radius:22px;object-fit:cover;display:block">':'<span style="width:44px;height:44px;border-radius:22px;background:'+t[0]+';color:'+t[1]+';display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:600">'+E(kcInitials(n))+'</span>';
-    return '<button data-ci="'+E(n)+'" style="background:'+P+';border:'+(isHere?'2px solid '+O:'1.5px dashed #B3AB93')+';border-radius:14px;padding:8px 10px;display:flex;align-items:center;gap:10px;opacity:'+(isHere?1:.7)+';min-height:0;text-align:left;color:'+F+'">'+
-     '<span style="position:relative;width:44px;height:44px;flex:none;display:block">'+av44+'<span style="position:absolute;right:-3px;bottom:-3px;width:18px;height:18px;border-radius:9px;background:'+(isHere?O:(isGone?CL:B))+';color:'+(isGone?'#fff':F)+';font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center">'+(isHere?'✓':(isGone?'×':''))+'</span></span>'+
-     '<span style="display:flex;flex-direction:column;line-height:1.2;min-width:0"><span style="font-size:15px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+E(n)+'</span><span style="font-size:13px;color:'+M+'">'+state+'</span></span></button>';}
+    var SZ='clamp(44px,9.5vh,92px)',RD='50%';
+    var av44=PLAYER_PHOTOS[n]?'<img alt="" src="'+PLAYER_PHOTOS[n]+'" style="width:'+SZ+';height:'+SZ+';border-radius:'+RD+';object-fit:cover;display:block">':'<span style="width:'+SZ+';height:'+SZ+';border-radius:'+RD+';background:'+t[0]+';color:'+t[1]+';display:flex;align-items:center;justify-content:center;font-size:clamp(16px,3.2vh,30px);font-weight:600">'+E(kcInitials(n))+'</span>';
+    return '<button data-ci="'+E(n)+'" style="background:'+P+';border:'+(isHere?'2px solid '+O:'1.5px dashed #B3AB93')+';border-radius:16px;padding:8px 14px;display:flex;align-items:center;gap:clamp(10px,1.8vh,18px);opacity:'+(isHere?1:.7)+';min-height:0;text-align:left;color:'+F+'">'+
+     '<span style="position:relative;width:'+SZ+';height:'+SZ+';flex:none;display:block">'+av44+'<span style="position:absolute;right:-2px;bottom:-2px;width:clamp(18px,2.8vh,28px);height:clamp(18px,2.8vh,28px);border-radius:50%;background:'+(isHere?O:(isGone?CL:B))+';color:'+(isGone?'#fff':F)+';font-size:clamp(13px,1.9vh,18px);font-weight:700;display:flex;align-items:center;justify-content:center">'+(isHere?'\u2713':(isGone?'\u00D7':''))+'</span></span>'+
+     '<span style="display:flex;flex-direction:column;line-height:1.2;min-width:0;gap:2px"><span style="font-size:clamp(16px,2.4vh,24px);font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+E(n)+'</span><span style="font-size:clamp(14px,1.9vh,18px);color:'+M+'">'+state+'</span></span></button>';}
 function checkin(){
   var ro=getRosterSorted(),att=getAttendance(),here=ro.filter(function(n){return att[n]===true;}).length,gone=ro.filter(function(n){return att[n]===false;}).length,coming=ro.length-here-gone;
   var info=SCHEDULE_INFO||{},P_=presentPlayers().length,lines=[];
@@ -8663,8 +8663,9 @@ function startBox(){
 function bracket(){
   var pg=S.bkp;
   function seg(k,t){var on=pg===k;return '<button data-bkp="'+k+'" style="min-height:44px;padding:0 20px;border-radius:12px;background:'+(on?F:P)+';color:'+(on?C:F)+';border:'+(on?'1.5px solid '+F:'1px solid '+B)+';font-family:Rubik,sans-serif;font-weight:600;font-size:14px">'+t+'</button>';}
+  var bz=(function(){var W=pg==='main'?1160:930,H=pg==='main'?330:420,aw=(window.innerWidth||1133)-32,ah=(window.innerHeight||744)-69-56-24;return Math.max(.7,Math.min(2.4,aw/W,ah/H)).toFixed(3);})();
   return '<div style="flex:1;min-height:0;display:flex;flex-direction:column"><div style="height:56px;flex:none;display:flex;align-items:center;gap:8px;padding:0 20px;background:'+SAND+';border-bottom:1px solid '+B+'">'+seg('main','Main bracket')+seg('place','Placement &amp; consolation')+startBox()+'</div>'+
-   '<div style="flex:1;min-height:0;display:flex;align-items:center;justify-content:center;padding:0 24px;overflow:auto"><div style="zoom:'+(pg==='main'?.84:.94)+';flex:none;margin:0 auto">'+(pg==='main'?bracketMain():bracketPlace())+'</div></div></div>';
+   '<div style="flex:1;min-height:0;display:flex;align-items:center;justify-content:center;padding:0 16px;overflow:auto"><div style="zoom:'+bz+';flex:none;margin:0 auto">'+(pg==='main'?bracketMain():bracketPlace())+'</div></div></div>';
 }
 
 // ---------- MORE ----------
@@ -8763,6 +8764,7 @@ function swapSheet(){
   }
   return sheetWrap(h);
 }
+var KCS_COH=false;
 function podSig(){try{return (sd(seedStandings,[])||[]).slice(0,3).map(function(p){return p.name;}).join('|');}catch(e){return '';}}
 function podiumSeen(){try{return localStorage.getItem('kcs_podium_seen')===podSig();}catch(e){return false;}}
 function podiumSheet(){
@@ -8805,6 +8807,7 @@ function doAction(a){
   if(k==='nextgo'){safeStorage.removeItem('kc_nov6_undorem');safeStorage.removeItem('kc_nov6_undotot');endChangeover();startTimer();return;}
   if(k==='undoend'){var ur=+safeStorage.getItem('kc_nov6_undorem'),ut=+safeStorage.getItem('kc_nov6_undotot')||600;['kc_nov6_lastend','kc_nov6_coto','kc_nov6_undorem','kc_nov6_undotot'].forEach(function(x){safeStorage.removeItem(x);});endChangeover();timerTotalSecs=ut;timerRemainingSecs=ur>0?ur:ut;renderTimerDisplay();sd(syncSoon);return;}
   if(k==='endpo'){pauseTimer();resetTimer();return;}
+  if(k==='tset'){try{openTimeSetter();}catch(e){}return;}
   if(k==='podium'){S.sheet='podium';return;}
   if(k==='startpo'){confirmAction('Start the playoffs?','The round robin is locked and the quarterfinals begin. Playoffs run without a changeover.',function(){safeStorage.setItem('kc_nov6_postart','1');fullRecalc();S.tab='matches';S.view='po';},'Yes, start playoffs');return;}
   if(k==='walkin'){walkinChooser();return;}
@@ -8853,6 +8856,7 @@ function ciTap(n){
 var root;
 function render(force){
   if(!root)return;
+  try{if(timerMode!=='changeover')KCS_COH=false;else if(!KCS_COH&&!started()){KCS_COH=true;if(safeStorage.getItem('kc_nov6_undorem')!==null)throw 0;var _rp=sd(currentPhase,null),_le=+safeStorage.getItem('kc_nov6_lastend')||0;if(_rp&&_rp.type==='round'){var _e=endingRound(_rp);if(_e>_le){safeStorage.setItem('kc_nov6_lastend',String(_e));var _T=kcNextLive(_e);safeStorage.setItem('kc_nov6_coto',_T?String(_T):'');sd(syncSoon);}}}}catch(e){}
   try{if(!S.ent&&!S.sheet&&!podiumSeen()&&!started()){var _p=sd(currentPhase,null);if(_p&&_p.type==='playoffs'&&phase().type!=='round')S.sheet='podium';}}catch(e){}
   var body=S.tab==='checkin'?checkin():S.tab==='lb'?lb():S.tab==='bracket'?bracket():S.tab==='more'?more():(S.tab==='results'&&resultsReady())?results():matches();
   var ov='';
