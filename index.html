@@ -4671,13 +4671,13 @@ function initSync(){
 // ═══════════════════════════════════════
 // Schedule version: when the printed schedule or roster changes, anything saved by an older version
 // (scores, locked rounds, swaps, check-ins, timer) is cleared once so old names can't mix with the new roster.
-const SCHED_VER = 'c11-v1';
+const SCHED_VER = 'c11-v5';
 const SCHED_VER_KEY = 'kc_nov6_schedver';
 function ensureSchedVersion(){
   if(KC_VIEWER) return;
   let cur = null; try{ cur = safeStorage.getItem(SCHED_VER_KEY); }catch(e){}
   if(cur !== SCHED_VER){
-    [SCORES_KEY,SUBS_KEY,PLAYOFF_SUBS_KEY,SKIPPED_KEY,ENDED_KEY,EXTRA_ROUNDS_KEY,NEW_PLAYERS_KEY,ATT_KEY,FROZEN_KEY,POMODE_KEY,TIMER_KEY,STARTS_KEY,MAKEUP_SKIP_KEY,PLANB_KEY,PLANB_AUTO_KEY,'kc_nov6_autosig'].forEach(k=>{ try{ safeStorage.removeItem(k); }catch(e){} });
+    [SCORES_KEY,SUBS_KEY,PLAYOFF_SUBS_KEY,SKIPPED_KEY,ENDED_KEY,EXTRA_ROUNDS_KEY,NEW_PLAYERS_KEY,ATT_KEY,FROZEN_KEY,POMODE_KEY,TIMER_KEY,STARTS_KEY,MAKEUP_SKIP_KEY,PLANB_KEY,PLANB_AUTO_KEY,'kc_nov6_autosig','kc_nov6_cmap','kc_nov6_cname','kc_nov6_reveal','kc_nov6_undorem','kc_nov6_undotot','kc_nov6_postart'].forEach(k=>{ try{ safeStorage.removeItem(k); }catch(e){} });
     try{ safeStorage.setItem(SCHED_VER_KEY, SCHED_VER); }catch(e){}
   }
 }
@@ -8525,7 +8525,6 @@ function checkin(){
    '<div style="background:#fff;border:1px solid '+B+';border-radius:16px;padding:14px;display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center"><span class="rb" style="font-weight:700;font-size:13px;letter-spacing:.08em;color:'+F+'">SCAN TO SEE YOUR MATCHES</span><div style="width:200px;height:200px;border-radius:10px;overflow:hidden">'+kcQR(KC_LIVE_URL,200,F)+'</div><span style="font-size:13px;font-weight:600;color:'+F+'">'+E(KC_LIVE_URL.replace('https://',''))+'</span></div>'+
    '<div style="background:'+P+';border:1px solid '+B+';border-radius:16px;padding:14px 16px;display:flex;flex-direction:column;gap:6px"><span class="rb" style="font-weight:700;font-size:13px;letter-spacing:.08em">SCHEDULE</span><span style="font-size:15px;font-weight:600">'+P_+' players · '+COURT_IDS.length+' courts</span><span style="font-size:13px;color:'+M+'">'+TOTAL_ROUNDS_PRINTED+' rounds. Locked once the first score is in.</span>'+lines.map(function(l){return '<span style="font-size:13px;color:'+M+'">'+E(l)+'</span>';}).join('')+'</div>'+
    '<button data-a="walkin" style="min-height:52px;border-radius:12px;border:0;background:'+O+';color:'+F+';font-weight:600;font-size:15px">Add late player</button>'+
-   '<button data-a="rebuild" style="min-height:52px;border-radius:12px;border:1.5px solid '+F+';background:transparent;color:'+F+';font-weight:600;font-size:15px">Rebuild schedule</button>'+
    '<button data-a="allhere" style="min-height:40px;border-radius:12px;border:0;background:transparent;color:'+M+';font-weight:600;font-size:13px;text-decoration:underline">Check in everyone</button>'+
    '<span style="font-size:13px;color:'+M+';margin-top:auto">Tap a player to cycle: here, away, not yet.</span></div></div>';
 }
