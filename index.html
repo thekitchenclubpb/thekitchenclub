@@ -8423,7 +8423,8 @@ function chipsBar(v){
     var opt=false;
     h+='<button data-view="'+r+'" style="min-height:44px;padding:0 14px;border-radius:12px;background:'+(cur?F:(done?SEL:P))+';color:'+(cur?C:F)+';border:'+(opt?'1.5px dashed '+M:(cur||isNow?'1.5px solid '+F:'1px solid '+B))+';font-family:Rubik,sans-serif;font-weight:600;font-size:14px;white-space:nowrap;flex:none">R'+r+''+'</button>';}
   var g0=(PLAYOFF_STAGE_GROUPS||[])[0];
-  if(started())h+='<button data-view="po" style="min-height:44px;padding:0 14px;border-radius:12px;background:'+(v==='po'?F:P)+';color:'+(v==='po'?C:F)+';border:1.5px solid '+F+';font-family:Rubik,sans-serif;font-weight:600;font-size:14px;white-space:nowrap;flex:none">Playoffs'+(g0?' · '+E(sh(g0.time)):'')+'</button>';
+  if(started()){var _gs=PLAYOFF_STAGE_GROUPS||[],_cg=v==='po'?poGroup():null;
+    _gs.forEach(function(g){var on=_cg&&_cg.key===g.key;h+='<button data-pg="'+g.key+'" style="min-height:44px;padding:0 14px;border-radius:12px;background:'+(on?F:P)+';color:'+(on?C:F)+';border:1.5px solid '+F+';font-family:Rubik,sans-serif;font-weight:600;font-size:14px;white-space:nowrap;flex:none">'+E(g.label)+' · '+E(sh(g.time))+'</button>';});}
   if(typeof v==='number'){
     var skd=sd(function(){return isRoundSkipped(v);},false);
     if(p.type!=='round'&&!started())h+='<button data-tab="bracket" style="margin-left:auto;min-height:44px;padding:0 16px;border-radius:12px;border:0;background:'+O+';color:'+F+';font-family:Rubik,sans-serif;font-weight:700;font-size:14px;white-space:nowrap;flex:none">Round robin done · open Bracket to start playoffs ›</button>';
@@ -8434,15 +8435,15 @@ function chipsBar(v){
 }
 function colSpans(n){return n===5?[3,3,2,2,2]:(n===3?[2,2,2]:(n===4?[3,3,3,3]:(n===2?[3,3]:[6])));}
 function courtCard(o){
-  var tl=!!o.tall,sm=!tl&&o.span<3,sa=o.sa,sb=o.sb,has=sa!==undefined&&sb!==undefined,wa=has&&sa>sb,wb=has&&sb>sa;
-  function team(arr,swp,score,win){return '<div style="display:flex;align-items:center;justify-content:space-between;flex:1;gap:8px;min-height:0"><div style="display:flex;flex-direction:column;gap:'+(tl?10:(sm?2:4))+'px;min-width:0">'+arr.map(function(n,i){var sub=o.subs&&o.subs[swp+i];return '<button class="pbtn" '+(o.swattr?'data-sw="'+o.swattr+'|'+(swp+i)+'"':'')+' style="gap:8px;'+(sub?'color:'+CL:'')+'">'+av(n,tl?46:(sm?26:30),tl?16:11)+'<span style="font-size:'+(tl?27:(sm?16:18))+'px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+E(n)+(sd(function(){return !isPresent(n);},false)?'</span><span style="font-size:11px;font-weight:700;letter-spacing:.06em;padding:2px 7px;border-radius:99px;background:'+CL+';color:#fff;flex:none;margin-left:4px">AWAY':'')+(o.seeds&&o.seeds[n]?' ('+o.seeds[n]+')':'')+'</span></button>';}).join('')+'</div>'+
-    '<span class="rb" style="font-size:'+(tl?76:(sm?34:42))+'px;font-weight:700;line-height:1;padding:2px 10px;border-radius:10px;background:'+(win?SEL:'transparent')+';flex:none">'+(score===undefined?'–':score)+'</span></div>';}
-  return '<div style="grid-column:span '+o.span+';'+(tl?'grid-row:span 2;':'')+'background:'+P+';border:'+(o.warn?'1.5px solid '+CL:(tl?'3px solid '+o.accent:'1px solid '+B))+';border-radius:16px;padding:'+(sm?'10px 12px':'12px 14px')+';display:flex;flex-direction:column;gap:'+(sm?4:6)+'px;min-height:0;min-width:0;overflow:hidden">'+
+  var tl=!!o.tall,sm=!tl&&o.span<3,SH=(window.innerHeight||800)<780,cp=sm||(!tl&&SH),sa=o.sa,sb=o.sb,has=sa!==undefined&&sb!==undefined,wa=has&&sa>sb,wb=has&&sb>sa;
+  function team(arr,swp,score,win){return '<div style="display:flex;align-items:center;justify-content:space-between;flex:1;gap:8px;min-height:0"><div style="display:flex;flex-direction:column;gap:'+(tl?10:(cp?2:4))+'px;min-width:0">'+arr.map(function(n,i){var sub=o.subs&&o.subs[swp+i];return '<button class="pbtn" '+(o.swattr?'data-sw="'+o.swattr+'|'+(swp+i)+'"':'')+' style="gap:8px;'+(sub?'color:'+CL:'')+'">'+av(n,tl?46:(cp?(sm?(SH?22:26):24):30),tl?16:11)+'<span style="font-size:'+(tl?27:(cp?(sm?(SH?15:16):15):18))+'px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+E(n)+(sd(function(){return !isPresent(n);},false)?'</span><span style="font-size:11px;font-weight:700;letter-spacing:.06em;padding:2px 7px;border-radius:99px;background:'+CL+';color:#fff;flex:none;margin-left:4px">AWAY':'')+(o.seeds&&o.seeds[n]?' ('+o.seeds[n]+')':'')+'</span></button>';}).join('')+'</div>'+
+    '<span class="rb" style="font-size:'+(tl?76:(cp?(sm?34:32):42))+'px;font-weight:700;line-height:1;padding:2px 10px;border-radius:10px;background:'+(win?SEL:'transparent')+';flex:none">'+(score===undefined?'–':score)+'</span></div>';}
+  return '<div style="grid-column:span '+o.span+';'+(tl?'grid-row:span 2;':'')+'background:'+P+';border:'+(o.warn?'1.5px solid '+CL:(tl?'3px solid '+o.accent:'1px solid '+B))+';border-radius:16px;padding:'+(cp?'8px 12px':'12px 14px')+';display:flex;flex-direction:column;gap:'+(cp?4:6)+'px;min-height:0;min-width:0;overflow:hidden">'+
    '<div style="display:flex;align-items:center;justify-content:space-between;gap:6px;min-width:0">'+(o.cm?'<button data-cm="'+o.cm+'" aria-label="Change court" class="pbtn rb" style="font-weight:700;font-size:'+(sm?18:21)+'px;letter-spacing:.04em;white-space:nowrap;gap:6px;min-width:0"><span style="overflow:hidden;text-overflow:ellipsis;min-width:0">'+E(o.title)+'</span></button>':'<span class="rb" style="font-weight:700;font-size:21px;letter-spacing:.06em;white-space:nowrap">'+E(o.title)+'</span>')+'<span style="font-size:13px;font-weight:600;padding:4px '+(sm?9:11)+'px;border-radius:99px;background:'+o.chipBg+';color:'+o.chipFg+';white-space:nowrap;flex:none">'+E(sm?String(o.chip).replace('Placement ','PL '):o.chip)+'</span></div>'+
    (o.badge?'<div style="display:flex;align-items:center;gap:12px;padding:6px 0 8px;border-bottom:2px solid '+o.accent+'66">'+o.badge+'</div>':'')+
    team(o.a,0,sa,wa)+'<div style="height:1px;background:'+B+'"></div>'+team(o.b,2,sb,wb)+
-   (o.note&&!sm?'<div style="font-size:13px;color:'+(o.warn?CL:M)+';line-height:1.25">'+E(o.note)+'</div>':'')+
-   '<button data-ent="'+o.ent+'" style="min-height:46px;border-radius:12px;border:0;background:'+(o.saved?SAND:F)+';color:'+(o.saved?F:C)+';font-weight:600;font-size:15px">'+(o.saved?'Edit score':'Enter score')+'</button></div>';
+   (o.note&&!cp?'<div style="font-size:13px;color:'+(o.warn?CL:M)+';line-height:1.25">'+E(o.note)+'</div>':'')+
+   '<button data-ent="'+o.ent+'" style="min-height:'+(cp?(SH?36:38):46)+'px;border-radius:12px;border:0;background:'+(o.saved?SAND:F)+';color:'+(o.saved?F:C)+';font-weight:600;font-size:15px">'+(o.saved?'Edit score':'Enter score')+'</button></div>';
 }
 function roundGrid(r){
   var cl=roundCourts(r),sc=getScores(),sp=colSpans(cl.length),subs=getSubs();
@@ -8489,7 +8490,9 @@ function poSide(g){
   var list='<div style="flex:1;min-height:0;background:'+P+';border:1px solid '+B+';border-radius:16px;padding:12px 14px;display:flex;flex-direction:column;gap:8px"><span class="rb" style="font-weight:700;font-size:13px;letter-spacing:.08em">PLAYOFF ROUNDS</span>'+
    groups.map(function(x,i){var now=cur&&x.key===cur.key&&started();var tc=i===groups.length-1?'#9A4F36':M;
      return '<button data-pg="'+x.key+'" style="flex:1;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;text-align:left;'+(now?'background:'+F+';color:'+C+';border:0':'background:transparent;color:'+F+';border:1px solid '+B)+';border-radius:12px;padding:8px 12px"><span class="rb" style="font-size:13px;font-weight:700;letter-spacing:.08em;color:'+(now?LT:tc)+'">'+(now?'NOW · ':'')+E(sh(x.time))+'</span><span style="font-size:15px;font-weight:600">'+E(x.label)+'</span><span style="font-size:13px;color:'+(now?LT:M)+'">'+E(groupSub(x))+'</span></button>';}).join('')+'</div>';
-  if(g&&g.key==='finals')return timer+miniLB();
+  timer=timer.replace('flex:1 1 0;min-height:0;overflow:hidden','flex:0 0 auto');
+  list=list.replace('flex:1;min-height:0;background','flex:1;min-height:90px;overflow-y:auto;background');
+  if(g&&g.key==='finals')return timer+list;
   return timer+list;
 }
 function poBottom(g){
