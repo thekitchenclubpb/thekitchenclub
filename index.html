@@ -3595,6 +3595,9 @@ function resetAll(){
       safeStorage.removeItem(STARTS_KEY);
       safeStorage.removeItem(MAKEUP_SKIP_KEY);
       safeStorage.removeItem('kc_nov6_autosig'); safeStorage.removeItem(PLANB_KEY); safeStorage.removeItem(PLANB_AUTO_KEY); safeStorage.removeItem(SCHEDALT_KEY); applyS21Mode(); lastAutoSig = null;
+      ['kc_nov6_undorem','kc_nov6_undotot','kc_nov6_coto','kc_nov6_lastend','kc_nov6_postart','kcs_podium_seen'].forEach(function(x){safeStorage.removeItem(x);try{localStorage.removeItem(x);}catch(e){}});
+      try{ pauseTimer(); }catch(e){}
+      try{ timerMode='game'; gameSecs=600; coMins=2; timerTotalSecs=600; timerRemainingSecs=600; timerEndAt=null; timerRunning=false; stopTimerInterval(); renderTimerDisplay(); safeStorage.removeItem(TIMER_KEY); }catch(e){}
       rebuildSchedule();
       fullRecalc();
     }
