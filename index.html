@@ -7931,7 +7931,7 @@ function r1mins(){var t=String(((ROUND_TIMES.find(function(x){return x.r===1;})|
 function revealIn(){var n=melbNow();if(n===null)return 0;var rm=r1mins()-REVEAL_MIN;return Math.round((Date.UTC(EV_Y,EV_M,EV_D,Math.floor(rm/60),rm%60,0)-n)/1000);}
 function lobbyOn(){
   if(wStarted())return false;
-  var rv=ls('kc_nov6_reveal');
+  var rv=safeStorage.getItem('kc_nov6_reveal');
   if(rv==='1')return false;
   if(rv==='0')return true;
   return revealIn()>0;
@@ -7939,7 +7939,7 @@ function lobbyOn(){
 function cdTxt(sec){sec=Math.max(0,sec);var h=Math.floor(sec/3600),m=Math.floor(sec%3600/60),x=sec%60;function z(v){return v<10?'0'+v:''+v;}return h>0?h+':'+z(m)+':'+z(x):z(m)+':'+z(x);}
 function lobby(n){
   var t1=((ROUND_TIMES.find(function(x){return x.r===1;})||{}).time||'6:40 PM'),rm=r1mins()-REVEAL_MIN,rt=((Math.floor(rm/60)+11)%12+1)+':'+('0'+rm%60).slice(-2)+(rm>=720?' PM':' AM');
-  var forced=ls('kc_nov6_reveal')==='0',sec=revealIn(),showCd=!forced&&sec>0&&sec<86400;
+  var forced=safeStorage.getItem('kc_nov6_reveal')==='0',sec=revealIn(),showCd=!forced&&sec>0&&sec<86400;
   var hd=header(n?'Hi, '+n:'The Kitchen Club',{kicker:'FIRST SERVE '+t1.toUpperCase(),right:''});
   var body='<div style="flex:1;min-height:0;background:'+F+';color:'+C+';border-radius:26px;padding:22px 18px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;text-align:center">'+
    '<img alt="" src="'+LOGO_B64+'" style="width:84px;height:84px;object-fit:contain;opacity:.95">'+
@@ -7992,7 +7992,17 @@ function now(){
     body='<div class="khero"><span class="sm">THAT\'S A WRAP</span><span class="big" style="font-size:44px">Final results</span><span class="sm">Thanks for playing tonight.</span></div><button class="btn" data-tab="results" style="width:100%">See the results</button>';
   } else { return matches(true); }
   var foot='<div style="flex:none;text-align:center;font-size:14px;color:'+M+'">'+(n&&mode()!=='watch'?'Playing as <b>'+E(n)+'</b> \u00B7 <a data-go="join" style="text-decoration:underline;display:inline-block;padding:8px 6px">switch</a>':'Watching \u00B7 <a data-go="join" style="text-decoration:underline;display:inline-block;padding:8px 6px">switch to player view</a>')+'</div>';
-  return screen(hd,body+foot);
+  var ci='';
+  try{
+    if(n&&mode()!=='watch'){
+      var _a=getAttendance()[n],_st=wStarted(),bg,fg,ic,tx,sb;
+      if(_a===true){if(!_st){bg='#DDE6B8';fg=F;ic='\u2713';tx="You're checked in";sb='All set. See you on court.';}}
+      else if(_a===false){bg='#F0D9CF';fg='#7A3A24';ic='!';tx="You're marked as away";sb="If that's not right, see the organiser.";}
+      else{bg='#F6E7B4';fg='#5E4A08';ic='!';tx='Please check in with the organiser';sb='Go to the organiser table so you can be added to the games.';}
+      if(tx)ci='<div style="flex:none;display:flex;align-items:center;gap:12px;background:'+bg+';color:'+fg+';border-radius:16px;padding:12px 14px"><span class="rb" style="width:30px;height:30px;border-radius:50%;background:'+fg+';color:'+bg+';display:flex;align-items:center;justify-content:center;font-weight:800;font-size:17px;flex:none">'+ic+'</span><span style="display:flex;flex-direction:column;line-height:1.25;min-width:0"><b style="font-size:16px">'+E(tx)+'</b><span style="font-size:13px;opacity:.85">'+E(sb)+'</span></span></div>';
+    }
+  }catch(e){}
+  return screen(hd,ci+body+foot);
 }
 function matchCard(court,label,A,Bt,s){
   var has=s&&validScore(s);
